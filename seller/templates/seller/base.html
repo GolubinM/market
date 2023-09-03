@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type='image/x-icon' href="{% static 'papermodels/favicon.ico' %}">
+</head>
+<body>
+<div class="container">
+    <div class="menu">
+        <div class="wrap">
+            <ul class="menu">
+                <li><a href="{% url 'home' %}"><img class="logo" src="{% static 'seller/logo.png' %}" alt="logo"></a>
+                </li>
+                <li class="text"><a href="{% url 'home' %}">Магазин</a></li>
+                <li class="text"><a href="{% url 'goods' %}">Товары</a></li>
+                {% if request.user.is_authenticated %}
+                {% if user.is_staff %}
+                <li class="text last">Сотрудник: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
+                {% else %}
+                <li class="text last">Покупатель: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
+                {% endif %}
+                {% else %}
+                <li class="text last"><a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Авторизация</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="content">
+        <div class="wrap">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

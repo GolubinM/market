@@ -1,0 +1,30 @@
+{% extends 'seller/base.html' %}
+{% load static %}
+{% block content %}
+
+<h2 class="cat_title">Товары<br></h2>
+
+<h4>Товаров: {{ goods.count }}
+    {% if request.user.is_staff %}
+    <a class="add_model" href="{% url 'create-good'%}"> + Добавить товар</a>
+    {% endif %}
+    {% if not request.user.is_authenticated %}
+    <em class="last">Необходимо зарегистрироваться и авторизоваться для совершения покупки</em>
+    {% endif %}
+</h4>
+
+<div class="models">
+    {% for good in goods %}
+    <div class="elements">
+        {% if request.user.is_authenticated %}
+        <h2 class="top"><a href="">{{ good.title }}</a></h2>
+        <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
+        {% else %}
+        <h2 class="top"><a href="">{{ good.title }}</a></h2>
+        <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
+        {% endif %}
+        <div class="blog_text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
