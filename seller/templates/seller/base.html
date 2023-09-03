@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="icon" type='image/x-icon' href="{% static 'papermodels/favicon.ico' %}">
+    <link rel="icon" type='image/x-icon' href="{% static 'seller/favicon.ico' %}">
 </head>
 <body>
 <div class="container">
@@ -29,6 +29,7 @@
             </ul>
         </div>
     </div>
+    <h2>{{ error }}</h2>
     <div class="content">
         <div class="wrap">
             {% block content %}

@@ -16,14 +16,14 @@
 <div class="models">
     {% for good in goods %}
     <div class="elements">
-        {% if request.user.is_authenticated %}
-        <h2 class="top"><a href="">{{ good.title }}</a></h2>
-        <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
+        {% if request.user.is_staff %}
+        <h5 class="top"><a href="{% url 'viewgood' good.pk %}">{{ good.title }}</a></h5>
+        <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
         <h2 class="top"><a href="">{{ good.title }}</a></h2>
         <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% endif %}
-        <div class="blog_text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
+        <div class="decription-text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
     </div>
     {% endfor %}
 </div>

@@ -11,7 +11,7 @@ class Goods(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250)
     description = models.TextField()
-    picture = models.ForeignKey('Picture', on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to='goods/images')
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -25,9 +25,5 @@ class Goods(models.Model):
 class GoodsCategories(models.Model):
     title = models.CharField(max_length=250)
 
-
-class Picture(models.Model):
-    picture = models.ImageField(upload_to='goods/images/')
-
     def __str__(self):
-        return self.picture.url
+        return self.title

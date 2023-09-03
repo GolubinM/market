@@ -27,10 +27,11 @@ urlpatterns = [
     path("register/", RegisterUser.as_view(), name="register"),
     path("logout/", logout_user, name="logout"),
     path("", home, name="home"),
-    # path("home/", home, name="home"),
     path("goods/", goods_page, name="goods"),
     path("create-good/", create_good, name="create-good"),
-
-    # path("seller/", include("seller.urls")),
-    # path("goods/", include("goods.urls")),
+    path("viewgood/<int:pk>", viewgood, name="viewgood"),
+    path("viewgood/<int:pk>/delete", deletegood, name="delete"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

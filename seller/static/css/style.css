@@ -145,13 +145,15 @@ h1 {
   border: 6px solid #fff;
   margin: 10px 10px;
   padding: 20px 30px;
-  justify-content: space-around;
+  justify-content: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
+  grid-gap:20px;
 }
 .model_img {
   max-width: 200px;
+  max-height: 200px;
 }
 
 .contacts {
@@ -191,4 +193,17 @@ a {
 .last {
   float: right;
   margin-right: 20px;
+}
+.decription-text{
+  font-size: 10px;
+}
+
+.elements{
+  border-radius: 2px;
+  border-color: aliceblue;
+  box-shadow: 2px 2px 12px 1px #8b8585;
+  padding: 4px 4px 10px 30px;
+  background-color: #fdfdfd;
+  width: 240px;
+  height: 360px;
 }
