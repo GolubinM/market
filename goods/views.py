@@ -9,10 +9,9 @@ def goods_page(request):
     return render(request, 'goods/goods.html', {"goods": goods})
 
 
-
 def create_good(request):
     if request.method == 'POST':
-        form = CreateGoodsForm(request.POST)
+        form = CreateGoodsForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('goods')
@@ -37,7 +36,7 @@ def viewgood(request, pk):
         return render(request, 'goods/viewgood.html', {'good': good, 'form': form})
     else:
         try:
-            form = CreateGoodsForm(request.POST,instance=good)
+            form = CreateGoodsForm(request.POST, instance=good)
             form.save()
             return redirect('goods')
         except ValueError:
