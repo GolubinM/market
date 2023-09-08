@@ -1,5 +1,5 @@
 from django import forms
-from .models import Goods
+from .models import Goods, Price
 
 
 class CreateGoodsForm(forms.ModelForm):
@@ -19,4 +19,15 @@ class CreateGoodsForm(forms.ModelForm):
             # 'updated': forms.TextInput(attrs={'class': 'form-input'}),
             # 'status': forms.TextInput(attrs={'class': 'form-input'}),
             # 'category': forms.TextInput(attrs={'class': 'form-input'}),
+        }
+
+
+class SetPrice(forms.ModelForm):
+    class Meta:
+        model = Price
+        fields = "__all__"
+        exclude = ['date_time_actual', 'good_id']
+        widgets = {
+            'price': forms.NumberInput(attrs={'class': 'form-input'}),
+            'date_time_actual': forms.DateTimeInput(attrs={'class': 'form-input'}),
         }

@@ -1,0 +1,13 @@
+{% extends 'seller/base.html' %}
+
+{% block content %}
+<h3>Назначение цены товару</h3>
+<form action="{% url 'create-good' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for f in form %}
+    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}:</label>{{ f }}</p>
+    <div class="form-error">{{f.errors}}</div>
+    {% endfor %}
+    <button class="btn" type="submit">Добавить</button>
+</form>
+{% endblock %}

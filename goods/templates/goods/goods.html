@@ -18,6 +18,9 @@
     <div class="elements">
         {% if request.user.is_staff %}
         <h5 class="top"><a href="{% url 'viewgood' good.pk %}">{{ good.title }}</a></h5>
+
+        {# <h5 class="top">{{ price|"price.good_id=good.pk }}</h5> #}
+
         <div class="decription-text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}

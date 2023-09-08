@@ -6,14 +6,22 @@
 <div class="but">
 
     <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% for f in form %}
-    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}:</label>{{ f }}</p>
-    <div class="form-error">{{f.errors}}</div>
-    {% endfor %}
-    <button class="btn" type="submit">Сохранить</button>
-    </form>
+        {% csrf_token %}
+        {% for f in form %}
+        <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}:</label>{{ f }}</p>
+        <div class="form-error">{{f.errors}}</div>
+        {% endfor %}
 
+        <ul>
+            Цены:
+            {% for price in prices %}
+            <li>{{ price.date_time_actual |date:'d.m.Y H:i' }} : {{ price.price }}</li>
+            {% endfor %}
+        </ul>
+        {{ price_form }}
+        <button class="btn" type="submit">Сохранить</button>
+        <p></p>
+    </form>
 
     <form action="{% url 'delete' good.id %}" method="post">
         {% csrf_token %}
