@@ -41,6 +41,9 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     paid = models.DateTimeField(default=None, null=True, blank=True)
 
+    def line_total(self):
+        return self.count * self.price
+
     def __str__(self):
         return f"корзина {self.pk} клиент:{self.client_id}"
 

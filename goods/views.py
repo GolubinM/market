@@ -2,11 +2,16 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Price, Goods, Order
 from .forms import CreateGoodsForm, SetPrice
+from django.db.models import Avg, Min, Max, Sum
 
 
 def goods_page(request):
     goods = Goods.objects.all()
-    return render(request, 'goods/goods.html', {"goods": goods})
+    # user_pk = get_cart_info(request)
+    cart_quantity = get_cart_info(request).aggregate(Sum("count"))['count__sum']
+    # print(cart_quantity['count__sum'])
+
+    return render(request, 'goods/goods.html', {"goods": goods, 'cart_quantity': cart_quantity})
 
 
 def create_good(request):
@@ -32,6 +37,7 @@ def deletegood(request, pk):
 def viewgood(request, pk):
     good = get_object_or_404(Goods, pk=pk)
     form = CreateGoodsForm(instance=good)
+    # user_pk = request.user.pk
 
     if request.method == 'GET':
         return render(request, 'goods/viewgood.html', {'good': good, 'form': form})
@@ -40,9 +46,14 @@ def viewgood(request, pk):
             form = CreateGoodsForm(request.POST, instance=good)
             gd = form.save()
             last_price = Price.objects.filter(good_id=pk).order_by('-date_time_actual').first()
+            print(last_price)
             # Если цена в карточке не изменилась, не добавляем новую запись в справочник цен
             # print(last_price.price,gd.current_price, last_price.price==gd.current_price)
-            if last_price.price != gd.current_price:
+            if last_price:
+                if last_price.price != gd.current_price:
+                    new_price = Price(price=gd.current_price, good_id=gd)
+                    new_price.save()
+            else:
                 new_price = Price(price=gd.current_price, good_id=gd)
                 new_price.save()
 
@@ -77,7 +88,6 @@ def cart_view(request, client_id):
     cart = "cart request"
     # cart1 = Order.objects.filter(client_id=client_id)
     cart = Order.objects.all()
-    print(cart)
     order_sum = 0
     for order_position in cart:
         order_sum += order_position.price * order_position.count
@@ -87,3 +97,9 @@ def cart_view(request, client_id):
         "order_sum": order_sum
     }
     return render(request, 'goods/cart-view.html', context)
+
+
+def get_cart_info(request):
+    user = request.user
+    cart_user = Order.objects.filter(client_id=user)
+    return cart_user

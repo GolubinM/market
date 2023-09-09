@@ -3,12 +3,22 @@
 {% block content %}
 
 <p>Корзина</p>
-<ul>
+
+<table>
     {% for row in cart %}
-    <li>{{row.pk}}: {{row.good_id}} x {{row.good_price}} = </li>
+
+    <tr>
+        <td>{{ row.pk }}</td>
+        <td>{{ row.good_id }}</td>
+        <td>{{ row.count }}</td>
+        <td>{{ row.price }}</td>
+        <td>{{ row.line_total }}</td>
+    </tr>
+
     {% endfor %}
-</ul>
-на общую сумму
-{{ order_sum }}
+</table>
+
+
+<p class="total">на общую сумму {{ order_sum }}</p>
 
 {% endblock %}

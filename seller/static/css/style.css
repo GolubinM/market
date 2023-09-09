@@ -266,3 +266,11 @@ a {
   display: flex;
   justify-content: space-between;
 }
+
+td{
+  padding: 5px 25px;
+}
+
+.total{
+  margin-left: 315px;
+}
