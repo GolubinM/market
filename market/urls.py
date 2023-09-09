@@ -31,6 +31,8 @@ urlpatterns = [
     path("create-good/", create_good, name="create-good"),
     path("viewgood/<int:pk>", viewgood, name="viewgood"),
     path("viewgood/<int:pk>/delete", deletegood, name="delete"),
+    path("viewgood/<int:pk>/add_to_cart", add_to_cart, name="add_to_cart"),
+    path("cart-view/<int:client_id>", cart_view, name="cart_view"),
 ]
 
 if settings.DEBUG:

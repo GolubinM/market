@@ -1,6 +1,9 @@
-p, h5{
-margin: 0;
-padding: 0;
+p,
+h2,
+h3,
+h5 {
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -18,8 +21,6 @@ body {
 .menu .wrap {
   list-style: none;
 }
-
-
 
 /* .menu li {
   padding: 5px 15px;
@@ -116,6 +117,7 @@ h1 {
   border: 6px solid #fff;
   margin: 20px 20px;
   padding: 20px 30px;
+
 }
 
 .text_part {
@@ -146,19 +148,15 @@ h1 {
 
 .models {
   display: flex;
-  background-color: rgb(225, 225, 225);
-  border: 6px solid #fff;
+  background-color: rgb(225, 225, 235);
+  border: 1px solid #ccd;
   margin: 10px 10px;
   padding: 20px 30px;
   justify-content: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
-  grid-gap:20px;
-}
-.model_img {
-  max-width: 200px;
-  max-height: 200px;
+  grid-gap: 20px;
 }
 
 .contacts {
@@ -184,13 +182,14 @@ a {
   margin: 0px 20px;
 }
 
-.form-input,.btn{
+.form-input,
+.btn {
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   outline-color: #9d9d9d;
   border: none;
   padding: 5px;
 }
-.btn{
+.btn {
   margin-left: 20px;
   min-width: 100px;
 }
@@ -199,7 +198,7 @@ a {
   float: right;
   margin-right: 20px;
 }
-.decription-text{
+.decription-text {
   font-size: 10px;
 }
 
@@ -219,7 +218,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding-top: 30px;
   padding-left: 22px;
   background: #fff;
@@ -227,4 +226,43 @@ a {
   box-sizing: border-box;
   overflow: hidden;
   gap: 7px;
+  border-radius: 5px;
+  position: relative;
+
+}
+.model_img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 5px;
+  /* vertical-align: bottom; */
+}
+
+.add_to_cart{
+  /* vertical-align: bottom; */
+  position: absolute;
+  z-index: 2;
+}
+
+.add_to_cart_text{
+  font-size: 18px;
+  position: absolute;
+  top: 260px;
+  left: 20px;
+  z-index: 2;
+}
+
+.add_to_cart_lnk{
+  font-size: 56px;
+  font-weight: 800;
+  padding-left: 20px;
+  
+  /* top: 240px; */
+  /* left: 128px; */
+}
+.cart_link{
+  margin-right: 150px;
+}
+.info_string{
+  display: flex;
+  justify-content: space-between;
 }

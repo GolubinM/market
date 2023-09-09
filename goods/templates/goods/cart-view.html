@@ -1,0 +1,14 @@
+{% extends 'seller/base.html' %}
+{% load static %}
+{% block content %}
+
+<p>Корзина</p>
+<ul>
+    {% for row in cart %}
+    <li>{{row.pk}}: {{row.good_id}} x {{row.good_price}} = </li>
+    {% endfor %}
+</ul>
+на общую сумму
+{{ order_sum }}
+
+{% endblock %}

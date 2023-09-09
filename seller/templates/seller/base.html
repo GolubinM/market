@@ -21,6 +21,7 @@
                 <li class="text last">Сотрудник: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
                 {% else %}
                 <li class="text last">Покупатель: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
+                
                 {% endif %}
                 {% else %}
                 <li class="text last"><a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Авторизация</a>
