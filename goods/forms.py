@@ -6,6 +6,13 @@ class CreateGoodsForm(forms.ModelForm):
     picture = forms.ImageField(label=u'Изображение',
                                widget=forms.FileInput(attrs={'class': 'form-input'}))
 
+    # def save(self, commit=True):
+        # print(self.fields['current_price'].__str__())
+        # print(self.data.get('current_price'))
+        # print(*self.data.items())
+        # new_price = Price(price=self.data.get('current_price'), good_id=pk)
+        # new_price.save()
+
     class Meta:
         model = Goods
         fields = "__all__"
@@ -13,12 +20,6 @@ class CreateGoodsForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'slug': forms.TextInput(attrs={'class': 'form-input'}),
             'description': forms.Textarea(attrs={'cols': 60, 'rows': 5, 'class': 'form-input'}),
-            # 'picture': forms.FileInput(attrs={'class': 'form-input'}),
-            # 'publish': forms.TextInput(attrs={'class': 'form-input'}),
-            # 'created': forms.TextInput(attrs={'class': 'form-input'}),
-            # 'updated': forms.TextInput(attrs={'class': 'form-input'}),
-            # 'status': forms.TextInput(attrs={'class': 'form-input'}),
-            # 'category': forms.TextInput(attrs={'class': 'form-input'}),
         }
 
 
