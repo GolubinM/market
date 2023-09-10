@@ -6,10 +6,17 @@
     {% csrf_token %}
     <div class="form-error">{{ form.non_field_errors }}</div>
     {% for f in form %}
-    <p><label  class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>{{ f }}</p>
+    <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>{{ f }}</p>
     <div class="form-error">{{f.errors}}</div>
     {% endfor %}
+
+    {% if redirect_field_value == None %}
+    <input type="hidden" name="{{ 'goods' }}">
+    {% else %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{redirect_field_value}}">
+    {% endif %}
     <button class="btn" type="submit">Авторизация</button>
+
 </form>
 
 {% endblock %}

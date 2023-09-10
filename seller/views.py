@@ -3,7 +3,6 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-
 from seller.forms import RegisterUserForm, LoginUserForm
 
 
@@ -19,7 +18,7 @@ def logout_user(request):
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'seller/register.html'
-    success_url = reverse_lazy('login')  # возвращаемся на форму в случае успеха
+    success_url = reverse_lazy('goods')  # возвращаемся на форму в случае успеха
 
 
 class LoginUser(LoginView):
@@ -27,4 +26,4 @@ class LoginUser(LoginView):
     template_name = 'seller/login.html'
 
     def get_success_url(self):
-        return reverse_lazy('login')  # возвращаемся на форму в случае успеха
+        return reverse_lazy('goods')  # возвращаемся на форму в случае успеха

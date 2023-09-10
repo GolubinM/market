@@ -6,12 +6,6 @@ class CreateGoodsForm(forms.ModelForm):
     picture = forms.ImageField(label=u'Изображение',
                                widget=forms.FileInput(attrs={'class': 'form-input'}))
 
-    # def save(self, commit=True):
-        # print(self.fields['current_price'].__str__())
-        # print(self.data.get('current_price'))
-        # print(*self.data.items())
-        # new_price = Price(price=self.data.get('current_price'), good_id=pk)
-        # new_price.save()
 
     class Meta:
         model = Goods
