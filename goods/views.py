@@ -1,14 +1,27 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Price, Goods, Order
-from .forms import CreateGoodsForm, SetPrice
+from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
 from django.db.models import Sum, F
+from .filters import GoodsPriceFilter
 
 
 def goods_page(request):
     goods = Goods.objects.all()
+    goods_price_filter = GoodsPriceFilter(request.GET,goods)
     # user_pk = get_cart_info(request)
+
+    if request.method == 'POST':
+        form_category = GoodsCategoriesRadio(request.POST)
+        if form_category.is_valid():
+            selected_point = form_category.cleaned_data['selected_categories']
+            selected_id = [cat.id for cat in selected_point]
+            goods = Goods.objects.filter(category__in=selected_id)
+    else:
+        form_category = GoodsCategoriesRadio()
+
     if request.user.is_authenticated:
+
         quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
         if quantity:
             print(quantity)
@@ -19,8 +32,11 @@ def goods_page(request):
     else:
         cart_quantity = "пусто"
     # print(cart_quantity['count__sum'])
-
-    return render(request, 'goods/goods.html', {"goods": goods, 'cart_quantity': cart_quantity})
+    context = {"goods": goods,
+               'cart_quantity': cart_quantity,
+               'form_category': form_category,
+               'goods_price_filter': goods_price_filter}
+    return render(request, 'goods/goods.html', context)
 
 
 def create_good(request):
@@ -158,4 +174,21 @@ def clear_order(request):
         Order.objects.filter(client_id=client_id).delete()
     except Exception as e:
         print("Ошибка очистки корзины", e)
+    return redirect('goods')
+
+
+def category_select(request):
+    if request.method == 'POST':
+        form_category = GoodsCategoriesRadio(request.POST)
+        if form_category.is_valid():
+            seleted_point = form_category.cleaned_data['selected_categories']
+            for cat in seleted_point:
+                print(cat)
+            print(form.cleaned_data)
+            profile.user = request.user
+            profile.save()
+            form.save_m2m()  # needed since using commit=False
+        else:
+            form = GoodsCategoriesRadio()
+    context = {'form_category': form_category}
     return redirect('goods')

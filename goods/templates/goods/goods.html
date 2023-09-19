@@ -4,6 +4,28 @@
 
 <h2 class="cat_title">Товары<br></h2>
 
+<h5>Фильтр товаров по категории</h5>
+<form action="{%url  'goods' %}" method="post">
+    {% csrf_token %}
+    <div class="inline">
+        {% for fcat in form_category %}
+        {{ fcat }}
+        {% endfor %}
+        <button class="btn" type="submit">Установить</button>
+    </div>
+    <div class="form-error">{{f.errors}}</div>
+</form>
+<h5>Фильтр товаров по цене</h5>
+<form method="get">
+    цена от {{goods_price_filter.form.current_price__gt}} до {{goods_price_filter.form.current_price__lt}}
+<input type="submit"/>
+</form>
+
+{% for good in goods_price_filter.qs %}
+${{ good.current_price }}<br/>
+{% endfor %}
+
+
 <h4 class="info_string">Товаров: {{ goods.count }}
     {% if request.user.is_staff %}
     <a class="add_model" href="{% url 'create-good'%}"> + Добавить товар</a>
@@ -30,11 +52,12 @@
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
 
         <h2 class="current_price">{{ good.current_price }}</h2>
-                       
+
         <div class="decription-text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
         <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% if request.user.is_authenticated %}
-        <p class="add_to_cart_text">в корзину <a class="add_to_cart_lnk"  href="{% url 'add_to_cart' good.pk %}">+</a></p>
+        <p class="add_to_cart_text">в корзину <a class="add_to_cart_lnk" href="{% url 'add_to_cart' good.pk %}">+</a>
+        </p>
         {% endif %}
 
         {% endif %}

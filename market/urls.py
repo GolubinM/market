@@ -37,7 +37,6 @@ urlpatterns = [
     path("add_count/<int:pk>", add_count, name="add_count"),
     path("delete_order_row/<int:pk>", delete_order_row, name="delete_order_row"),
     path("clear_order/", clear_order, name="clear_order"),
-
 ]
 
 if settings.DEBUG:

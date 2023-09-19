@@ -1,11 +1,10 @@
 from django import forms
-from .models import Goods, Price
+from .models import Goods, Price, GoodsCategories
 
 
 class CreateGoodsForm(forms.ModelForm):
     picture = forms.ImageField(label=u'Изображение',
                                widget=forms.FileInput(attrs={'class': 'form-input'}))
-
 
     class Meta:
         model = Goods
@@ -26,3 +25,16 @@ class SetPrice(forms.ModelForm):
             'price': forms.NumberInput(attrs={'class': 'form-input'}),
             'date_time_actual': forms.DateTimeInput(attrs={'class': 'form-input'}),
         }
+
+
+class GoodsCategoriesRadio(forms.ModelForm):
+    all_categories_objs = GoodsCategories.objects.all()
+    all_ids = [elm.id for elm in all_categories_objs]
+    selected_categories = forms.ModelMultipleChoiceField(queryset=all_categories_objs, required=False,
+                                                         widget=forms.CheckboxSelectMultiple(
+                                                             attrs={'class': 'category'}),
+                                                         initial=all_ids)
+
+    class Meta:
+        model = GoodsCategories
+        fields = ["selected_categories"]
