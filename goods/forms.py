@@ -28,6 +28,8 @@ class SetPrice(forms.ModelForm):
 
 
 class GoodsCategoriesRadio(forms.ModelForm):
+    min_price = forms.CharField(max_length=10)
+    max_price = forms.CharField(max_length=10)
     all_categories_objs = GoodsCategories.objects.all()
     all_ids = [elm.id for elm in all_categories_objs]
     selected_categories = forms.ModelMultipleChoiceField(queryset=all_categories_objs, required=False,
@@ -37,4 +39,6 @@ class GoodsCategoriesRadio(forms.ModelForm):
 
     class Meta:
         model = GoodsCategories
-        fields = ["selected_categories"]
+        fields = ["selected_categories",
+                  "min_price",
+                  "max_price"]

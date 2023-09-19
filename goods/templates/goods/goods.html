@@ -16,15 +16,6 @@
     <div class="form-error">{{f.errors}}</div>
 </form>
 <h5>Фильтр товаров по цене</h5>
-<form method="get">
-    цена от {{goods_price_filter.form.current_price__gt}} до {{goods_price_filter.form.current_price__lt}}
-<input type="submit"/>
-</form>
-
-{% for good in goods_price_filter.qs %}
-${{ good.current_price }}<br/>
-{% endfor %}
-
 
 <h4 class="info_string">Товаров: {{ goods.count }}
     {% if request.user.is_staff %}

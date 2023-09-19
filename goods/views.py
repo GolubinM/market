@@ -3,20 +3,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Price, Goods, Order
 from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
 from django.db.models import Sum, F
-from .filters import GoodsPriceFilter
 
 
 def goods_page(request):
     goods = Goods.objects.all()
-    goods_price_filter = GoodsPriceFilter(request.GET,goods)
     # user_pk = get_cart_info(request)
 
     if request.method == 'POST':
         form_category = GoodsCategoriesRadio(request.POST)
         if form_category.is_valid():
-            selected_point = form_category.cleaned_data['selected_categories']
+            data = form_category.cleaned_data
+            selected_point = data['selected_categories']
+            min_price_filter = data['min_price']
+            max_price_filter = data['max_price']
             selected_id = [cat.id for cat in selected_point]
-            goods = Goods.objects.filter(category__in=selected_id)
+            goods = Goods.objects.filter(category__in=selected_id, current_price__gte=min_price_filter,
+                                         current_price__lte=max_price_filter)
     else:
         form_category = GoodsCategoriesRadio()
 
@@ -35,7 +37,7 @@ def goods_page(request):
     context = {"goods": goods,
                'cart_quantity': cart_quantity,
                'form_category': form_category,
-               'goods_price_filter': goods_price_filter}
+               }
     return render(request, 'goods/goods.html', context)
 
 
