@@ -4,18 +4,22 @@
 
 <h2 class="cat_title">Товары<br></h2>
 
-<h5>Фильтр товаров по категории</h5>
+<div class="filter-header"><h5 class="first-title">Фильтр товаров по категории</h5><h5>цена от:</h5><h5>цена до:</h5><h5>сортировать по цене</h5>
+</div>
 <form action="{%url  'goods' %}" method="post">
     {% csrf_token %}
     <div class="inline">
         {% for fcat in form_category %}
         {{ fcat }}
         {% endfor %}
-        <button class="btn" type="submit">Установить</button>
+        <button class="btn arrow first" type="submit" name="first-low-price">&#8599;</button>
+        <button class="btn arrow" type="submit" name="first-high-price">&#8600;</button>
+        <button class="btn" type="submit" name="set_filter">Установить</button>
+        <button class="btn" type="submit" name="clear_filter" value="clear_filter">Очистить</button>
     </div>
     <div class="form-error">{{f.errors}}</div>
 </form>
-<h5>Фильтр товаров по цене</h5>
+
 
 <h4 class="info_string">Товаров: {{ goods.count }}
     {% if request.user.is_staff %}
@@ -37,14 +41,15 @@
 
         <h2 class="current_price">{{ good.current_price }}</h2>
 
-        <div class="decription-text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
+        <div class="category-text"><p>{{ good.category }}</p></div>
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
+        <h3 class="symb-abs">💗</h3>
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
 
         <h2 class="current_price">{{ good.current_price }}</h2>
 
-        <div class="decription-text"><p>{{ good.description | striptags | truncatechars:18 }}</p></div>
+        <div class="category-text"><p>{{ good.category }}</p></div>
         <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% if request.user.is_authenticated %}
         <p class="add_to_cart_text">в корзину <a class="add_to_cart_lnk" href="{% url 'add_to_cart' good.pk %}">+</a>

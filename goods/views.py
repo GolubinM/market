@@ -4,41 +4,71 @@ from .models import Price, Goods, Order
 from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
 from django.db.models import Sum, F
 
+USER_FILTER_VALUES = [None, None,
+                      'sort_by_category']  # для хранения промежуточных значений формы фильтра User при перезагрузке страницы
+
 
 def goods_page(request):
     goods = Goods.objects.all()
-    # user_pk = get_cart_info(request)
+    cart_quantity = "пусто"
+    if request.user.is_authenticated:
+        quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
+        if quantity:
+            cart_quantity = f'{quantity} шт'
 
-    if request.method == 'POST':
+    if not request.user.is_authenticated or not USER_FILTER_VALUES[1] == request.user or "clear_filter" in request.POST:
+        USER_FILTER_VALUES[0] = None
+        USER_FILTER_VALUES[2] = "sort_by_category"
+
+    if "first-high-price" in request.POST:
+        print("set high price")
+        USER_FILTER_VALUES[2] = "high_first"
+    if "first-low-price" in request.POST:
+        print("set high price")
+        USER_FILTER_VALUES[2] = "low_first"
+
+    if "set_filter" in request.POST:
         form_category = GoodsCategoriesRadio(request.POST)
         if form_category.is_valid():
+            USER_FILTER_VALUES[0] = form_category.cleaned_data
+            USER_FILTER_VALUES[1] = request.user
             data = form_category.cleaned_data
             selected_point = data['selected_categories']
-            min_price_filter = data['min_price']
-            max_price_filter = data['max_price']
+            min_price_filter = data['min_price_filter']
+            max_price_filter = data['max_price_filter']
             selected_id = [cat.id for cat in selected_point]
             goods = Goods.objects.filter(category__in=selected_id, current_price__gte=min_price_filter,
                                          current_price__lte=max_price_filter)
     else:
-        form_category = GoodsCategoriesRadio()
-
-    if request.user.is_authenticated:
-
-        quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
-        if quantity:
-            print(quantity)
-            cart_quantity = f'{quantity} шт'
+        if USER_FILTER_VALUES[0]:
+            data = USER_FILTER_VALUES[0]
+            selected_point = data['selected_categories']
+            min_price_filter = data['min_price_filter']
+            max_price_filter = data['max_price_filter']
+            selected_id = [cat.id for cat in selected_point]
+            goods = Goods.objects.filter(category__in=selected_id, current_price__gte=min_price_filter,
+                                         current_price__lte=max_price_filter)
+            form_category = GoodsCategoriesRadio(USER_FILTER_VALUES[0])
         else:
-            cart_quantity = "пусто"
+            form_category = GoodsCategoriesRadio()
 
+    if USER_FILTER_VALUES[2] == "low_first":
+        sort_rule = ["current_price", "category", "title"]
+    elif USER_FILTER_VALUES[2] == 'high_first':
+        sort_rule = ["-current_price", "category", "title"]
     else:
-        cart_quantity = "пусто"
-    # print(cart_quantity['count__sum'])
-    context = {"goods": goods,
+        sort_rule = ["category", "current_price", "title"]
+
+    context = {"goods": goods.order_by(*sort_rule),
                'cart_quantity': cart_quantity,
                'form_category': form_category,
                }
     return render(request, 'goods/goods.html', context)
+
+
+def add_to_cart(request, pk):
+    add_count(request, pk, call_from_template=False)
+    return redirect('goods')
 
 
 def create_good(request):
@@ -106,11 +136,6 @@ def set_price(request, pk):
             return render(request, 'goods/set-price.html', {'form': form, 'error': 'Неверные данные!'})
 
 
-def add_to_cart(request, pk):
-    add_count(request, pk, call_from_template=False)
-    return redirect('goods')
-
-
 def cart_view(request):
     cart = Order.objects.filter(client_id=request.user)
     order_sum = 0
@@ -155,7 +180,7 @@ def add_count(request, pk, call_from_template=True):
         count = 1
         new_order_row = Order(client_id=client_id, price=gd.current_price, good_id=gd, count=count)
         new_order_row.save()
-    print(call_from_template)
+    # print(call_from_template)
     if call_from_template:
         return redirect('cart_view')
 
