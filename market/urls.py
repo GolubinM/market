@@ -33,11 +33,13 @@ urlpatterns = [
     path("viewgood/<int:pk>/delete", deletegood, name="delete"),
     path("viewgood/<int:pk>/add_to_cart", add_to_cart, name="add_to_cart"),
     path("viewgood/<int:pk>/favorites-status-change", favorites_status_change, name="favorites-status-change"),
+    path("viewgood/<int:pk>/compare-status-change", compare_status_change, name="compare-status-change"),
     path("cart-view/", cart_view, name="cart_view"),
     path("substract_count/<int:pk>", substract_count, name="substract_count"),
     path("add_count/<int:pk>", add_count, name="add_count"),
     path("delete_order_row/<int:pk>", delete_order_row, name="delete_order_row"),
     path("clear_order/", clear_order, name="clear_order"),
+    path("compare-goods/", compare_goods, name="compare-goods"),
 ]
 
 if settings.DEBUG:

@@ -2,7 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 import goods.models
-from .models import Price, Goods, Order, FavoritesStatuses
+from .models import Price, Goods, Order, FavoritesStatuses, CompareStatuses
 from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
 from django.db.models import Sum, F
 
@@ -17,6 +17,7 @@ def goods_page(request):
         goods = user.goods_set.all()
 
     favorites = user.goods_set.all()
+    to_compare = user.compare_goods_set.all()
     cart_quantity = "пусто"
     if request.user.is_authenticated:
         quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
@@ -70,6 +71,7 @@ def goods_page(request):
                'cart_quantity': cart_quantity,
                'form_category': form_category,
                'favorites': favorites,
+               'to_compare': to_compare,
                }
     return render(request, 'goods/goods.html', context)
 
@@ -80,8 +82,8 @@ def add_to_cart(request, pk):
 
 
 def favorites_status_change(request, pk):
+    referer_page = request.META['HTTP_REFERER']
     user = request.user
-    print(user)
     good = Goods.objects.get(pk=pk)
     # print(good)
     # statuses = user.goods_set.all()
@@ -101,6 +103,48 @@ def favorites_status_change(request, pk):
     print(status)
     print("favorites status changed!!!")
     # add_count(request, pk, call_from_template=False)
+    if 'compare-goods' in referer_page:
+        # print('переход с compare-goods')
+        return redirect('compare-goods')
+    return redirect('goods')
+
+
+def compare_status_change(request, pk):
+    user = request.user
+    good = Goods.objects.get(pk=pk)
+    # print(good)
+    # statuses = user.goods_set.all()
+    # status = len(user.goods_set.filter(pk=pk))
+    status = user.compare_goods_set.filter(pk=pk)
+    if status:
+        print("В сравнении присутствует, удаляем из избранного:")
+        favs_good = CompareStatuses.objects.get(user=user, goods=good)
+        print(favs_good)
+        favs_good.delete()
+    else:
+        favs_good = CompareStatuses(user=user, goods=good)
+        print(favs_good)
+        favs_good.save()
+        print("В сравнении отсутствует, добавляем в избранное:")
+    status = user.compare_goods_set.filter(pk=pk)
+    print(status)
+    print("compare status changed!!!")
+    # add_count(request, pk, call_from_template=False)
+    return redirect('goods')
+
+
+def compare_goods(request):
+    user = request.user
+    goods_to_compare = user.compare_goods_set.all()
+    cart = Order.objects.filter(client_id=request.user)
+    if goods_to_compare:
+        favorites = user.goods_set.all()
+        context = {'goods_to_compare': goods_to_compare,
+                   'favorites': favorites,
+                   'cart': cart,
+                   }
+        return render(request, 'goods/compare-goods.html', context)
+
     return redirect('goods')
 
 
@@ -236,19 +280,18 @@ def clear_order(request):
         print("Ошибка очистки корзины", e)
     return redirect('goods')
 
-
-def category_select(request):
-    if request.method == 'POST':
-        form_category = GoodsCategoriesRadio(request.POST)
-        if form_category.is_valid():
-            seleted_point = form_category.cleaned_data['selected_categories']
-            for cat in seleted_point:
-                print(cat)
-            print(form.cleaned_data)
-            profile.user = request.user
-            profile.save()
-            form.save_m2m()  # needed since using commit=False
-        else:
-            form = GoodsCategoriesRadio()
-    context = {'form_category': form_category}
-    return redirect('goods')
+# def category_select(request):
+#     if request.method == 'POST':
+#         form_category = GoodsCategoriesRadio(request.POST)
+#         if form_category.is_valid():
+#             seleted_point = form_category.cleaned_data['selected_categories']
+#             for cat in seleted_point:
+#                 print(cat)
+#             print(form.cleaned_data)
+#             profile.user = request.user
+#             profile.save()
+#             form.save_m2m()  # needed since using commit=False
+#         else:
+#             form = GoodsCategoriesRadio()
+#     context = {'form_category': form_category}
+#     return redirect('goods')

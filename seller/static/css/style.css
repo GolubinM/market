@@ -191,6 +191,7 @@ a {
 .btn {
   margin-left: 20px;
   min-width: 100px;
+  text-align: center;
 }
 
 .last {
@@ -314,11 +315,11 @@ a {
 /* ----------- */
 
 .back_img {
-  max-width: 90%;
+  max-width: 92%;
   display: block;
   margin: 0px auto;
   align-items: center;
-  margin-top: -214px;
+  margin-top: -287px;
   border-radius: 15px 15px 0 0;
   opacity: 0.4;
   position: absolute;
@@ -405,6 +406,82 @@ a {
   opacity: 0.4;
   cursor: default;
 }
-.top{
+.top {
   margin-right: 10px;
+}
+
+.compare {
+  position: absolute;
+  left: 15px;
+  bottom: 10px;
+  opacity: 0.1;
+}
+.compare.sel {
+  opacity: 0.6;
+}
+
+.compare:hover {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.table-picture {
+  max-width: 90px;
+  max-height: 60px;
+  border-radius: 2px;
+  box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
+}
+
+.compare-table {
+  margin-top: 20px;
+  padding: 20px 40px;
+  border-radius: 10px;
+  box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
+  background: rgb(232, 232, 232);
+}
+
+.compare-row td {
+  padding: 2px 50px;
+  margin: 2px 20px;
+}
+
+.up-arrow {
+  width: 0px;
+  height: 0px;
+  border: solid 6px transparent;
+  background: transparent;
+  border-bottom: solid 8px rgb(71, 71, 71);
+  border-top-width: 2px;
+  cursor: pointer;
+}
+
+.up-arrow:active {
+  border-bottom: solid 8px rgb(200, 200, 200);
+}
+
+.down-arrow {
+  width: 0;
+  height: 0;
+  border: solid 6px transparent;
+  background: transparent;
+  border-top: solid 8px rgb(71, 71, 71);
+  border-bottom-width: 2px;
+  margin-top: 4px;
+  cursor: pointer;
+  shape-rendering: geometricPrecision;
+}
+.down-arrow:active {
+  border-top: solid 8px rgb(200, 200, 200);
+}
+.sorted {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.sort-pointers {
+  margin-left: 5px;
+}
+.fav-column {
+  position: relative;
+  right: 20px;
 }

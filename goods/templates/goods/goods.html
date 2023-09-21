@@ -18,6 +18,13 @@
         <button class="btn" type="submit" name="set_filter">Установить</button>
         <button class="btn" type="submit" name="clear_filter" value="clear_filter">Очистить</button>
         <button class="btn" type="submit" name="favorites_only">Избранное</button>
+<!--        изменить действие кнопки  !!!! submit  на ссылку  -->
+        <a target="_blank" class="btn"
+                href="{% url 'compare-goods'  %}">
+            Сравнить
+        </a>
+
+<!--        <button class="btn" type="button"  name="compare_goods">Сравнить</button>-->
     </div>
     <div class="form-error">{{f.errors}}</div>
 </form>
@@ -47,7 +54,7 @@
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
 
-        <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a
+        <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a title="избранное"
                 href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
 
@@ -56,6 +63,8 @@
         <div class="category-text"><p>{{ good.category }}</p></div>
         <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% if request.user.is_authenticated %}
+        <h3 {% if good in to_compare %}class="compare sel" {% else %} class="compare" {% endif %}><a title="сравнить"
+                href="{% url 'compare-status-change' good.pk %}">👭</a></h3>
         <p class="add_to_cart_text">в корзину <a class="add_to_cart_lnk" href="{% url 'add_to_cart' good.pk %}">+</a>
         </p>
         {% endif %}

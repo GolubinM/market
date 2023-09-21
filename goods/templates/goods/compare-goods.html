@@ -1,0 +1,58 @@
+{% extends 'seller/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<h2 class="cat_title">Сравнить товары<br></h2>
+<table class="compare-table">
+    <tr class="compare-row">
+        <th>Изображение</th>
+        <th>
+            <div class=" sorted">
+                Наименование
+                <div class="sort-pointers">
+                    <div class="up-arrow" onclick=""></div>
+                    <div class="down-arrow" onclick=""></div>
+                </div>
+            </div>
+        </th>
+        <th>
+            <div class=" sorted">
+                Категория
+                <div class="sort-pointers">
+                    <div class="up-arrow" onclick=""></div>
+                    <div class="down-arrow" onclick=""></div>
+                </div>
+            </div>
+        </th>
+        <th>
+            <div class=" sorted">
+                Цена
+                <div class="sort-pointers">
+                    <div class="up-arrow" onclick=""></div>
+                    <div class="down-arrow" onclick=""></div>
+                </div>
+            </div>
+        </th>
+        <th>
+            Избранное
+        </th>
+        <th>
+            В корзине
+        </th>
+    </tr> <!--ряд с ячейками заголовков-->
+    {% for good in goods_to_compare %}
+    <tr class="compare-row">
+        <td><img class="table-picture" src="{{ good.picture.url }}" alt="img"></td>
+        <td>{{ good.title }}</td>
+        <td>{{ good.category }}</td>
+        <td>{{ good.current_price }}</td>
+        <td class="fav-column">
+             <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a title="избранное"
+                href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
+        </td>
+        <td>{{ cart.good_id }}</td>
+
+    </tr> <!--ряд с ячейками тела таблицы-->
+    {% endfor %}
+</table>
+{% endblock %}
