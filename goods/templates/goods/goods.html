@@ -4,7 +4,8 @@
 
 <h2 class="cat_title">Товары<br></h2>
 
-<div class="filter-header"><h5 class="first-title">Фильтр товаров по категории</h5><h5>цена от:</h5><h5>цена до:</h5><h5>сортировать по цене</h5>
+<div class="filter-header"><h5 class="first-title">Фильтр товаров по категории</h5><h5>цена от:</h5><h5>цена до:</h5>
+    <h5>сортировать по цене</h5>
 </div>
 <form action="{%url  'goods' %}" method="post">
     {% csrf_token %}
@@ -44,7 +45,8 @@
         <div class="category-text"><p>{{ good.category }}</p></div>
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
-        <h3 class="symb-abs">💗</h3>
+
+        <h3 {% if good.id > 5 %}class="symb-abs" {% else %} class="symb-abs loved"{% endif %} ><a href="">💗</a></h3>
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
 
         <h2 class="current_price">{{ good.current_price }}</h2>

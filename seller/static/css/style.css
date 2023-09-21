@@ -334,9 +334,8 @@ a {
   display: flex;
   gap: 30px;
   padding: 5px;
-  
 }
-.inline{
+.inline {
   display: flex;
   gap: 45px;
   box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
@@ -348,18 +347,16 @@ a {
   text-shadow: 2px 3px 3px rgb(150, 150, 150);
   font-weight: 600;
 }
-.inline .btn:hover{
+.inline .btn:hover {
   cursor: pointer;
-  
 }
 
 .inline .btn:active {
   /* background: #b5b5b5; */
-  text-shadow:none;
-  
+  text-shadow: none;
 }
 
-.price-filter{
+.price-filter {
   box-shadow: 2px 2px 4px 2px rgba(140, 140, 140, 0.4 inset);
   padding: 0px 0px;
   width: 65px;
@@ -370,39 +367,41 @@ a {
   color: #747474;
   font-size: 16px;
 }
-.filter-header{
+.filter-header {
   display: flex;
-  gap:52px;
+  gap: 52px;
   text-shadow: none;
   color: #747474;
 }
-.first-title{
+.first-title {
   margin-right: 153px;
 }
-.checkbox-price{
+.checkbox-price {
   margin-right: 56px;
   width: 16px;
 }
 
-.arrow{
+.arrow {
   font-size: 26px;
   line-height: 0;
   min-width: 40px;
   margin-left: -10px;
   margin-right: -20px;
-
 }
-.arrow.first{
+.arrow.first {
   margin-left: 20px;
 }
-.symb-abs{
+.symb-abs {
   position: absolute;
   right: 15px;
   top: 10px;
   opacity: 0.1;
 }
+.symb-abs.loved {
+  opacity: 0.6;
+}
 
-.symb-abs:hover{
+.symb-abs:hover {
   opacity: 0.4;
-  cursor:default;
+  cursor: default;
 }
