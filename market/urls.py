@@ -32,6 +32,7 @@ urlpatterns = [
     path("viewgood/<int:pk>", viewgood, name="viewgood"),
     path("viewgood/<int:pk>/delete", deletegood, name="delete"),
     path("viewgood/<int:pk>/add_to_cart", add_to_cart, name="add_to_cart"),
+    path("viewgood/<int:pk>/favorites-status-change", favorites_status_change, name="favorites-status-change"),
     path("cart-view/", cart_view, name="cart_view"),
     path("substract_count/<int:pk>", substract_count, name="substract_count"),
     path("add_count/<int:pk>", add_count, name="add_count"),

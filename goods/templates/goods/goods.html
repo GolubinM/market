@@ -17,6 +17,7 @@
         <button class="btn arrow" type="submit" name="first-high-price">&#8600;</button>
         <button class="btn" type="submit" name="set_filter">Установить</button>
         <button class="btn" type="submit" name="clear_filter" value="clear_filter">Очистить</button>
+        <button class="btn" type="submit" name="favorites_only">Избранное</button>
     </div>
     <div class="form-error">{{f.errors}}</div>
 </form>
@@ -46,7 +47,8 @@
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
 
-        <h3 {% if good.id > 5 %}class="symb-abs" {% else %} class="symb-abs loved"{% endif %} ><a href="">💗</a></h3>
+        <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a
+                href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
 
         <h2 class="current_price">{{ good.current_price }}</h2>

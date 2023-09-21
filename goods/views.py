@@ -1,6 +1,8 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Price, Goods, Order
+
+import goods.models
+from .models import Price, Goods, Order, FavoritesStatuses
 from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
 from django.db.models import Sum, F
 
@@ -9,14 +11,19 @@ USER_FILTER_VALUES = [None, None,
 
 
 def goods_page(request):
+    user = request.user
     goods = Goods.objects.all()
+    if "favorites_only" in request.POST:
+        goods = user.goods_set.all()
+
+    favorites = user.goods_set.all()
     cart_quantity = "пусто"
     if request.user.is_authenticated:
         quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
         if quantity:
             cart_quantity = f'{quantity} шт'
 
-    if not request.user.is_authenticated or not USER_FILTER_VALUES[1] == request.user or "clear_filter" in request.POST:
+    if not user.is_authenticated or not USER_FILTER_VALUES[1] == request.user or "clear_filter" in request.POST:
         USER_FILTER_VALUES[0] = None
         USER_FILTER_VALUES[2] = "sort_by_category"
 
@@ -62,12 +69,38 @@ def goods_page(request):
     context = {"goods": goods.order_by(*sort_rule),
                'cart_quantity': cart_quantity,
                'form_category': form_category,
+               'favorites': favorites,
                }
     return render(request, 'goods/goods.html', context)
 
 
 def add_to_cart(request, pk):
     add_count(request, pk, call_from_template=False)
+    return redirect('goods')
+
+
+def favorites_status_change(request, pk):
+    user = request.user
+    print(user)
+    good = Goods.objects.get(pk=pk)
+    # print(good)
+    # statuses = user.goods_set.all()
+    # status = len(user.goods_set.filter(pk=pk))
+    status = user.goods_set.filter(pk=pk)
+    if status:
+        print("В избранном присутствует, удаляем из избранного:")
+        favs_good = FavoritesStatuses.objects.get(user=user, goods=good)
+        print(favs_good)
+        favs_good.delete()
+    else:
+        favs_good = FavoritesStatuses(user=user, goods=good)
+        print(favs_good)
+        favs_good.save()
+        print("В избранном отсутствует, добавляем в избранное:")
+    status = user.goods_set.filter(pk=pk)
+    print(status)
+    print("favorites status changed!!!")
+    # add_count(request, pk, call_from_template=False)
     return redirect('goods')
 
 

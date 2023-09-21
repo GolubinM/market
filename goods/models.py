@@ -19,6 +19,7 @@ class Goods(models.Model):
     status = models.CharField(max_length=11, choices=STATUS_CHOICES, default='published')
     category = models.ForeignKey('GoodsCategories', on_delete=models.PROTECT)
     current_price = models.DecimalField(max_digits=8, decimal_places=2)
+    favorites_statuses = models.ManyToManyField(User, through="FavoritesStatuses", null=True, blank=True,)
 
     def __str__(self):
         return self.title
@@ -53,3 +54,11 @@ class GoodsCategories(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class FavoritesStatuses(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    goods = models.ForeignKey(Goods, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.goods} is favorites of {self.user}"
