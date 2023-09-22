@@ -1,6 +1,6 @@
 {% extends 'seller/base.html' %}
 {% load static %}
-{% load humanize %}
+<!--{% load humanize %}-->
 {% block content %}
 <h2 class="cat_title">Сравнить товары<br></h2>
 <table class="compare-table">
@@ -10,8 +10,8 @@
             <div class=" sorted">
                 Наименование
                 <div class="sort-pointers">
-                    <div class="up-arrow" onclick=""></div>
-                    <div class="down-arrow" onclick=""></div>
+                    <div class="up-arrow"><a href="{% url 'compare-goods' 'title' %}"></a></div>
+                    <div class="down-arrow"><a href="{% url 'compare-goods' '-title' %}"></a></div>
                 </div>
             </div>
         </th>
@@ -19,8 +19,8 @@
             <div class=" sorted">
                 Категория
                 <div class="sort-pointers">
-                    <div class="up-arrow" onclick=""></div>
-                    <div class="down-arrow" onclick=""></div>
+                    <div class="up-arrow"><a href="{% url 'compare-goods' 'category' %}"></a></div>
+                    <div class="down-arrow"><a href="{% url 'compare-goods' '-category' %}"></a></div>
                 </div>
             </div>
         </th>
@@ -28,8 +28,8 @@
             <div class=" sorted">
                 Цена
                 <div class="sort-pointers">
-                    <div class="up-arrow" onclick=""></div>
-                    <div class="down-arrow" onclick=""></div>
+                    <div class="up-arrow"><a href="{% url 'compare-goods' 'price' %}"></a></div>
+                    <div class="down-arrow"><a href="{% url 'compare-goods' '-price' %}"></a></div>
                 </div>
             </div>
         </th>
@@ -47,10 +47,22 @@
         <td>{{ good.category }}</td>
         <td>{{ good.current_price }}</td>
         <td class="fav-column">
-             <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a title="избранное"
-                href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
+            <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a
+                    title="избранное"
+                    href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
         </td>
-        <td>{{ cart.good_id }}</td>
+        <td>
+            <div class="sorted">
+                <a href="{% url 'substract_count' good.pk %}" title="убрать из корзины">-</a>
+                <!--         Огромное желание заменить эту конструкцию фильтром отбора-->
+                {% for cart_good in cart %}
+                {% if cart_good.good_id == good %} {{cart_good.count}} {% endif %}
+                {% endfor %}
+                {% if not good.ordered.all %} 0 {% endif %}
+                {{ good.ordered.good_id }}
+                <a href="{% url 'add_count' good.pk %}" title="добавить в  корзину">+</a>
+            </div>
+        </td>
 
     </tr> <!--ряд с ячейками тела таблицы-->
     {% endfor %}

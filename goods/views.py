@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 import goods.models
 from .models import Price, Goods, Order, FavoritesStatuses, CompareStatuses
 from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Count, Min
 
 USER_FILTER_VALUES = [None, None,
                       'sort_by_category']  # для хранения промежуточных значений формы фильтра User при перезагрузке страницы
@@ -77,7 +77,7 @@ def goods_page(request):
 
 
 def add_to_cart(request, pk):
-    add_count(request, pk, call_from_template=False)
+    add_count(request, pk)
     return redirect('goods')
 
 
@@ -133,13 +133,38 @@ def compare_status_change(request, pk):
     return redirect('goods')
 
 
-def compare_goods(request):
+def compare_goods(request, sort_by=None):
+    print(sort_by)
     user = request.user
     goods_to_compare = user.compare_goods_set.all()
     cart = Order.objects.filter(client_id=request.user)
     if goods_to_compare:
+        if sort_by == "title":
+            sort_rule = ["title", "category", "current_price"]
+        elif sort_by == "-title":
+            sort_rule = ["-title", "category", "current_price"]
+        elif sort_by == 'category':
+            # sort_rule = ["category", "title", "current_price"]
+            sort_rule = ["category"]
+        elif sort_by == '-category':
+            print("категории по убыв")
+            sort_rule = ["-category"]
+            # sort_rule = ["-category", "title", "current_price"]
+        elif sort_by == 'price':
+            sort_rule = ["current_price", "category", "title"]
+        elif sort_by == '-price':
+            sort_rule = ["-current_price", "category", "title"]
+        else:
+            sort_rule = ["title"]
+        # test annotations
+        # набор товаров к сравнению
+        goods_to_compare = user.compare_goods_set.all().annotate(in_cart_counter=Min("order__count"))
+        # print('goods_to_compare: ', goods_to_compare)
+        # print(goods_to_compare[0].__dict__)
+
         favorites = user.goods_set.all()
-        context = {'goods_to_compare': goods_to_compare,
+        # print(goods_to_compare.order_by("category"))
+        context = {'goods_to_compare': goods_to_compare.order_by(*sort_rule),
                    'favorites': favorites,
                    'cart': cart,
                    }
@@ -233,7 +258,7 @@ def get_cart_info(request):
     return cart_user
 
 
-def substract_count(request, pk, from_form=True):
+def substract_count(request, pk):
     client_id = request.user
     try:
         same_good_in_order = Order.objects.get(good_id=pk, client_id=client_id)
@@ -242,11 +267,14 @@ def substract_count(request, pk, from_form=True):
             same_good_in_order.save()
     except Exception as e:
         print("Ошибка получения строки заказа", e)
-    if from_form:
+    referer_page = request.META['HTTP_REFERER']
+    if 'compare-goods' in referer_page:
+        return redirect('compare-goods')
+    elif 'cart_view' in referer_page:
         return redirect('cart_view')
 
 
-def add_count(request, pk, call_from_template=True):
+def add_count(request, pk):
     gd = get_object_or_404(Goods, pk=pk)
     client_id = request.user
     try:
@@ -257,8 +285,10 @@ def add_count(request, pk, call_from_template=True):
         count = 1
         new_order_row = Order(client_id=client_id, price=gd.current_price, good_id=gd, count=count)
         new_order_row.save()
-    # print(call_from_template)
-    if call_from_template:
+    referer_page = request.META['HTTP_REFERER']
+    if 'compare-goods' in referer_page:
+        return redirect('compare-goods')
+    elif 'cart_view' in referer_page:
         return redirect('cart_view')
 
 
@@ -279,19 +309,3 @@ def clear_order(request):
     except Exception as e:
         print("Ошибка очистки корзины", e)
     return redirect('goods')
-
-# def category_select(request):
-#     if request.method == 'POST':
-#         form_category = GoodsCategoriesRadio(request.POST)
-#         if form_category.is_valid():
-#             seleted_point = form_category.cleaned_data['selected_categories']
-#             for cat in seleted_point:
-#                 print(cat)
-#             print(form.cleaned_data)
-#             profile.user = request.user
-#             profile.save()
-#             form.save_m2m()  # needed since using commit=False
-#         else:
-#             form = GoodsCategoriesRadio()
-#     context = {'form_category': form_category}
-#     return redirect('goods')

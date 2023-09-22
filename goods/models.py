@@ -22,6 +22,8 @@ class Goods(models.Model):
     favorites_statuses = models.ManyToManyField(User, through="FavoritesStatuses", blank=True)
     compare_statuses = models.ManyToManyField(User, through="CompareStatuses", blank=True,
                                               related_name='compare_goods_set')
+    ordered = models.ManyToManyField(User, through="Order", blank=True,
+                                     related_name='orders_set')
 
     def __str__(self):
         return self.title

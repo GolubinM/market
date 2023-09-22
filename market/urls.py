@@ -40,6 +40,7 @@ urlpatterns = [
     path("delete_order_row/<int:pk>", delete_order_row, name="delete_order_row"),
     path("clear_order/", clear_order, name="clear_order"),
     path("compare-goods/", compare_goods, name="compare-goods"),
+    path("compare-goods/<str:sort_by>", compare_goods, name="compare-goods"),
 ]
 
 if settings.DEBUG:

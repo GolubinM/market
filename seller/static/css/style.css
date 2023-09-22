@@ -445,16 +445,27 @@ a {
   margin: 2px 20px;
 }
 
+.compare-row th {
+  padding: 2px 25px;
+}
+
 .up-arrow {
-  width: 0px;
-  height: 0px;
+  width: 0;
+  height: 0;
   border: solid 6px transparent;
   background: transparent;
   border-bottom: solid 8px rgb(71, 71, 71);
   border-top-width: 2px;
   cursor: pointer;
 }
-
+.up-arrow a{
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  right: 10px;
+  bottom: 10px;
+}
 .up-arrow:active {
   border-bottom: solid 8px rgb(200, 200, 200);
 }
@@ -473,6 +484,14 @@ a {
 .down-arrow:active {
   border-top: solid 8px rgb(200, 200, 200);
 }
+.down-arrow a{
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  right: 10px;
+  bottom: 10px;
+}
 .sorted {
   display: flex;
   justify-content: center;
@@ -483,5 +502,9 @@ a {
 }
 .fav-column {
   position: relative;
-  right: 20px;
+  right: 40px;
+}
+
+.delete-order-row {
+  text-align: center;
 }

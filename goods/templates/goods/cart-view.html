@@ -18,15 +18,14 @@
         <th>удалить<br>из корзины</th>
     <tbody>
     {% for row in cart %}
-    <tr>
+    <tr class="cart-table-row">
         <td>{{ row.good_id }}</td>
         <td class="subsract_good"><a href="{% url 'substract_count' row.good_id.pk %}">-</a></td>
         <td class="row_count">{{ row.count }}</td>
         <td class="add_good"><a href="{% url 'add_count' row.good_id.pk %}">+</a></td>
         <td>{{ row.price|intcomma }}</td>
         <td>{{ row.line_total|intcomma }}</td>
-        <td class="delete_order_row"><a href="{% url 'delete_order_row' row.good_id.pk %}">[X]</a></td>
-
+        <td class="delete-order-row"><a href="{% url 'delete_order_row' row.good_id.pk %}">[X]</a></td>
     </tr>
     {% endfor %}
     <tfoot>
