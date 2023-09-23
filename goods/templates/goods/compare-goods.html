@@ -54,12 +54,10 @@
         <td>
             <div class="sorted">
                 <a href="{% url 'substract_count' good.pk %}" title="убрать из корзины">-</a>
-                <!--         Огромное желание заменить эту конструкцию фильтром отбора-->
                 {% for cart_good in cart %}
                 {% if cart_good.good_id == good %} {{cart_good.count}} {% endif %}
                 {% endfor %}
-                {% if not good.ordered.all %} 0 {% endif %}
-                {{ good.ordered.good_id }}
+                {% if good.id not in goods_id_list_in_cart %} 0 {% endif %}
                 <a href="{% url 'add_count' good.pk %}" title="добавить в  корзину">+</a>
             </div>
         </td>

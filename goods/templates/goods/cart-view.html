@@ -3,11 +3,11 @@
 {% load humanize %}
 {% block content %}
 
-<h4 class="info_string">Товаров: {{ goods.count }}
-<p>Корзина</p>
+<h4 class="info_string">
+<p>🛒 Корзина</p>
 <a class="cart_link" href="{% url 'clear_order' %}"> [XX] Удалить все товары из корзины</a>
 </h4>
-<table class="table">
+<table class="table cart-view">
     <thead>
     <tr>
         <th>№ п/п</th>

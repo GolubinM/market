@@ -1,15 +1,11 @@
 {% extends 'seller/base.html' %}
 {% load static %}
 {% block content %}
-<h1>МАГАЗИН БУМАЖНЫХ МОДЕЛЕЙ</h1>
+<a href="{% url 'goods' %}">
+    <img class="back_img" src="{% static 'seller/main_page_city.jpg' %}" alt="backimage"></div>
+</a>
+<h1 class="main-header">{{ title }}</h1>
 <div class="content start">
-    Вашему вниманию представлен сборник великолепных моделей из бумаги с инструкциями по сборке и лекала.<br>
-    Модели разделены по категориям, рассчитаны на самый широкий круг увлеченных людей.<br>
-    Создавайте прекрасные города, зоопарки, морские флотилии, аэродромы и железные дороги. Cами и вместе с детьми.
+    {{content|safe}}
 </div>
-<footer class="footer">
-    <a href="{% url 'goods' %}">
-    <img class="back_img" src="{% static 'seller/main_page_city.jpg' %}" alt="backimage" ></div>
-    </a>
-</footer>
 {% endblock %}

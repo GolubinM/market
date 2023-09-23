@@ -1,9 +1,7 @@
 {% extends 'seller/base.html' %}
-{% load static %}
 {% block content %}
 
 <h2 class="cat_title">Товары<br></h2>
-
 <div class="filter-header"><h5 class="first-title">Фильтр товаров по категории</h5><h5>цена от:</h5><h5>цена до:</h5>
     <h5>сортировать по цене</h5>
 </div>
@@ -13,62 +11,54 @@
         {% for fcat in form_category %}
         {{ fcat }}
         {% endfor %}
-        <button class="btn arrow first" type="submit" name="first-low-price">&#8599;</button>
-        <button class="btn arrow" type="submit" name="first-high-price">&#8600;</button>
-        <button class="btn" type="submit" name="set_filter">Установить</button>
-        <button class="btn" type="submit" name="clear_filter" value="clear_filter">Очистить</button>
-        <button class="btn" type="submit" name="favorites_only">Избранное</button>
-<!--        изменить действие кнопки  !!!! submit  на ссылку  -->
-        <a target="_blank" class="btn"
-                href="{% url 'compare-goods'  %}">
-            Сравнить
-        </a>
-
-<!--        <button class="btn" type="button"  name="compare_goods">Сравнить</button>-->
+        <button class="btn arrow first" type="submit" name="first-low-price" title="от низких цен к высоким">&#8599;
+        </button>
+        <button class="btn arrow" type="submit" name="first-high-price" title="от высоких цен к низким">&#8600;</button>
+        <button class="btn" type="submit" name="set_filter" title="установить фильтр">Установить</button>
+        <button class="btn" type="submit" name="clear_filter" value="clear_filter" title="очистить фильтр">Очистить
+        </button>
+        <button class="btn" type="submit" name="favorites_only" title="просмотр избранного">Избранное</button>
+        <a class="btn" href="{% url 'compare-goods'  %}" title="сравнить отмеченные">Сравнить</a>
     </div>
     <div class="form-error">{{f.errors}}</div>
 </form>
-
-
 <h4 class="info_string">Товаров: {{ goods.count }}
     {% if request.user.is_staff %}
     <a class="add_model" href="{% url 'create-good'%}"> + Добавить товар</a>
     {% endif %}
     {% if request.user.is_authenticated and not request.user.is_staff %}
-    <a class="cart_link" href="{% url 'cart_view' %}"> в корзине: {{ cart_quantity }} </a>
+    <a class="cart_link" href="{% url 'cart_view' %}">🛒 в корзине: {{ cart_quantity }} </a>
     {% endif %}
     {% if not request.user.is_authenticated %}
     <em class="last">Необходимо зарегистрироваться и авторизоваться для совершения покупки</em>
     {% endif %}
 </h4>
-
 <div class="models">
     {% for good in goods %}
     <div class="elements">
         {% if request.user.is_staff %}
         <h3 class="top"><a href="{% url 'viewgood' good.pk %}">{{ good.title }}</a></h3>
-
         <h2 class="current_price">{{ good.current_price }}</h2>
-
         <div class="category-text"><p>{{ good.category }}</p></div>
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
-
-        <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a title="избранное"
+        <h3 {% if good in favorites %}class="symb-abs loved" {% else %} class="symb-abs" {% endif %}><a
+                title="избранное"
                 href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
-
         <h2 class="current_price">{{ good.current_price }}</h2>
-
         <div class="category-text"><p>{{ good.category }}</p></div>
         <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% if request.user.is_authenticated %}
-        <h3 {% if good in to_compare %}class="compare sel" {% else %} class="compare" {% endif %}><a title="сравнить"
-                href="{% url 'compare-status-change' good.pk %}">👭</a></h3>
-        <p class="add_to_cart_text">в корзину <a class="add_to_cart_lnk" href="{% url 'add_to_cart' good.pk %}">+</a>
-        </p>
+        <h3 {% if good in to_compare %}class="compare sel" {% else %}
+            class="compare" {% endif %}><a title="сравнить" href="{% url 'compare-status-change' good.pk %}">👭</a>
+        </h3>
+        <div class="add_to_cart"><span {% if good in cart %}class="symb-abs-cart loved" {% else %} class="symb-abs-cart"
+                                       {% endif %}>🛒</span><a class="add_to_cart_lnk"
+                                                              href="{% url 'add_to_cart' good.pk %}"
+                                                              title="добавить в корзину">+</a>
+        </div>
         {% endif %}
-
         {% endif %}
     </div>
     {% endfor %}

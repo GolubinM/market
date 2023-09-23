@@ -7,7 +7,38 @@ from seller.forms import RegisterUserForm, LoginUserForm
 
 
 def home(request):
-    return render(request, 'seller/home.html')
+    context = {
+        'title': "МАГАЗИН БУМАЖНЫХ МОДЕЛЕЙ:",
+        'content': """ Вашему вниманию представлен сборник великолепных моделей из бумаги с инструкциями по сборке и лекала.<br>
+        Модели разделены по категориям, рассчитаны на самый широкий круг увлеченных людей.<br>
+        Создавайте прекрасные города, зоопарки, морские флотилии, аэродромы и железные дороги. Cами и вместе с детьми. """
+
+    }
+    return render(request, 'seller/home.html', context)
+
+
+def contacts(request):
+    context = {
+        'title': "Контакты:",
+        'content': """ Наш адрес: Москва, ул. Льва Толстого, дом 12 <br>
+                    тел. +7-995-777-77-17, +7-995-777-77-16, +7-995-777-77-15<br>
+                     e-mail: shop@paper-world.ru """
+
+    }
+    return render(request, 'seller/home.html', context)
+
+
+def discounts(request):
+    active_discount = [1, 2, 3]
+    discount_info = ''
+    for discount_inf in active_discount:
+        discount_info += f"{discount_inf}<br>"
+    context = {
+        'title': "Информация о скидках:",
+        'content': discount_info
+
+    }
+    return render(request, 'seller/home.html', context)
 
 
 def logout_user(request):

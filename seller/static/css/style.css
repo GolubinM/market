@@ -13,21 +13,25 @@ body {
     Verdana, sans-serif;
 }
 
+.main-header{
+  margin-top: 10px ;
+}
+
 .content {
-  padding: 5px 35px;
-  /* background-color: rgb(231, 231, 232); */
+  padding: 5px 15px;
+  
 }
 
 .menu .wrap {
   list-style: none;
 }
-
-/* .menu li {
-  padding: 5px 15px;
+.menu{
+  background: #fff;
+  border-radius: 10px;
+  width: 100%;
+  margin: 5px auto;
+  box-sizing: border-box;
 }
-.menu .right_side {
-  float: right;
-} */
 
 ul {
   list-style: none;
@@ -85,9 +89,6 @@ ul.menu li.text {
   flex-direction: column;
 }
 
-.start {
-  line-height: 2em;
-}
 h1 {
   margin: 0px 40px;
 }
@@ -105,7 +106,9 @@ h1 {
 }
 .start {
   font-size: 20px;
-  margin-top: 30px;
+  margin-top: 18px;
+  padding: 0 50px;
+  line-height: 2em;
 }
 .categories_img {
   width: 250px;
@@ -242,18 +245,19 @@ a {
   z-index: 2;
 }
 
-.add_to_cart_text {
+.add_to_cart {
   font-size: 18px;
   position: absolute;
   top: 290px;
-  left: 50px;
+  right: 10px;
   z-index: 2;
+  opacity: 0.8;
 }
 
 .add_to_cart_lnk {
   font-size: 40px;
-  font-weight: 800;
-  padding-left: 20px;
+  font-weight: 700;
+  padding-left: 0px;
 }
 .cart_link {
   margin-right: 150px;
@@ -271,6 +275,16 @@ a {
   border-collapse: collapse;
   counter-reset: row_counter;
 }
+
+.table.cart-view {
+  margin-left:  70px;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
+  background: rgb(232, 232, 232);
+}
+
+
 .table tbody tr {
   counter-increment: row_counter; /* сосчитать только tr в tbody */
 }
@@ -317,10 +331,9 @@ a {
 .back_img {
   max-width: 92%;
   display: block;
-  margin: 0px auto;
-  align-items: center;
-  margin-top: -287px;
-  border-radius: 15px 15px 0 0;
+  margin: 0 auto;
+  position: sticky;
+  border-radius: 15px;
   opacity: 0.4;
   position: absolute;
   z-index: -1;
@@ -406,9 +419,24 @@ a {
   opacity: 0.4;
   cursor: default;
 }
+.symb-abs:active {
+  opacity: 1;
+  cursor: default;
+}
+
 .top {
   margin-right: 10px;
 }
+.symb-abs-cart {
+  position: absolute;
+  right: 30px;
+  bottom: 10px;
+  opacity: 0.1;
+}
+.symb-abs-cart.loved {
+  opacity: 0.6;
+}
+
 
 .compare {
   position: absolute;
@@ -422,6 +450,10 @@ a {
 
 .compare:hover {
   opacity: 0.4;
+  cursor: default;
+}
+.compare:active {
+  opacity: 1;
   cursor: default;
 }
 

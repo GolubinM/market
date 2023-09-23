@@ -1,4 +1,3 @@
-from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -74,3 +73,17 @@ class CompareStatuses(models.Model):
 
     def __str__(self):
         return f"{self.goods} checked as ready-to-compare by {self.user}"
+
+
+class Discount(models.Model):
+    title = models.CharField(max_length=250)
+    description = models.TextField()
+    is_active = models.BooleanField(blank=True, null=True, default=False)
+    size_in_percent = models.DecimalField(decimal_places=2, max_digits=3)
+    for_each_numbers = models.IntegerField(null=True, blank=True)
+    min_order_sum = models.IntegerField(null=True, blank=True)
+    for_category = models.ForeignKey(GoodsCategories, on_delete=models.CASCADE, blank=True, null=True)
+    for_goods = models.ForeignKey(Goods, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return self.title

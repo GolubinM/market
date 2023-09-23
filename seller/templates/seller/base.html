@@ -6,6 +6,17 @@
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" type='image/x-icon' href="{% static 'seller/favicon.ico' %}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+        });
+
+        window.onbeforeunload = function(e) {
+            localStorage.setItem('scrollpos', window.scrollY);
+        };
+
+    </script>
 </head>
 <body>
 <div class="container">
@@ -16,11 +27,13 @@
                 </li>
                 <li class="text"><a href="{% url 'home' %}">Магазин</a></li>
                 <li class="text"><a href="{% url 'goods' %}">Товары</a></li>
+                <li class="text"><a href="{% url 'discounts' %}">Скидки</a></li>
+                <li class="text"><a href="{% url 'contacts' %}">Контакты</a></li>
                 {% if request.user.is_authenticated %}
                 {% if user.is_staff %}
                 <li class="text last">Сотрудник: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
                 {% else %}
-                <li class="text last">Покупатель: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
+                <li class="text last"><a href="{% url 'cart_view' %}">Корзина 🛒 |</a>  Покупатель: {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
                 {% endif %}
                 {% else %}
                 <li class="text last"><a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Авторизация</a>

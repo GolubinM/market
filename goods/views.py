@@ -1,4 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect, get_object_or_404
 
 import goods.models
@@ -12,6 +13,7 @@ USER_FILTER_VALUES = [None, None,
 
 def goods_page(request):
     user = request.user
+    # goods = Goods.objects.all()
     goods = Goods.objects.all()
     if "favorites_only" in request.POST:
         goods = user.goods_set.all()
@@ -67,11 +69,15 @@ def goods_page(request):
     else:
         sort_rule = ["category", "current_price", "title"]
 
+    cart = Goods.objects.filter(ordered=user)
+    print(cart)
+
     context = {"goods": goods.order_by(*sort_rule),
                'cart_quantity': cart_quantity,
                'form_category': form_category,
                'favorites': favorites,
                'to_compare': to_compare,
+               'cart': cart,
                }
     return render(request, 'goods/goods.html', context)
 
@@ -138,12 +144,14 @@ def compare_goods(request, sort_by=None):
     user = request.user
     goods_to_compare = user.compare_goods_set.all()
     cart = Order.objects.filter(client_id=request.user)
+    goods_id_list_in_cart = cart.values_list('good_id', flat=True)
     if goods_to_compare:
         if sort_by == "title":
             sort_rule = ["title", "category", "current_price"]
         elif sort_by == "-title":
             sort_rule = ["-title", "category", "current_price"]
         elif sort_by == 'category':
+            print("категории по возр")
             # sort_rule = ["category", "title", "current_price"]
             sort_rule = ["category"]
         elif sort_by == '-category':
@@ -156,17 +164,11 @@ def compare_goods(request, sort_by=None):
             sort_rule = ["-current_price", "category", "title"]
         else:
             sort_rule = ["title"]
-        # test annotations
-        # набор товаров к сравнению
-        goods_to_compare = user.compare_goods_set.all().annotate(in_cart_counter=Min("order__count"))
-        # print('goods_to_compare: ', goods_to_compare)
-        # print(goods_to_compare[0].__dict__)
-
         favorites = user.goods_set.all()
-        # print(goods_to_compare.order_by("category"))
         context = {'goods_to_compare': goods_to_compare.order_by(*sort_rule),
                    'favorites': favorites,
                    'cart': cart,
+                   'goods_id_list_in_cart': goods_id_list_in_cart,
                    }
         return render(request, 'goods/compare-goods.html', context)
 
@@ -268,9 +270,10 @@ def substract_count(request, pk):
     except Exception as e:
         print("Ошибка получения строки заказа", e)
     referer_page = request.META['HTTP_REFERER']
+    print(referer_page)
     if 'compare-goods' in referer_page:
         return redirect('compare-goods')
-    elif 'cart_view' in referer_page:
+    elif 'cart-view' in referer_page:
         return redirect('cart_view')
 
 
@@ -286,9 +289,10 @@ def add_count(request, pk):
         new_order_row = Order(client_id=client_id, price=gd.current_price, good_id=gd, count=count)
         new_order_row.save()
     referer_page = request.META['HTTP_REFERER']
+    print(referer_page)
     if 'compare-goods' in referer_page:
         return redirect('compare-goods')
-    elif 'cart_view' in referer_page:
+    elif 'cart-view' in referer_page:
         return redirect('cart_view')
 
 
@@ -309,3 +313,5 @@ def clear_order(request):
     except Exception as e:
         print("Ошибка очистки корзины", e)
     return redirect('goods')
+
+
