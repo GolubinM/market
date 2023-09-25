@@ -28,6 +28,9 @@
                 <li class="text"><a href="{% url 'home' %}">Магазин</a></li>
                 <li class="text"><a href="{% url 'goods' %}">Товары</a></li>
                 <li class="text"><a href="{% url 'discounts' %}">Скидки</a></li>
+                {% if request.user.is_authenticated and user.is_staff %}
+                <li class="text"><a href="{% url 'discounts-manage' %}">Управление скидками</a></li>
+                {% endif %}
                 <li class="text"><a href="{% url 'contacts' %}">Контакты</a></li>
                 {% if request.user.is_authenticated %}
                 {% if user.is_staff %}

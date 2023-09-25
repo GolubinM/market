@@ -6,6 +6,11 @@ h5 {
   padding: 0;
 }
 
+a {
+  all: unset;
+  cursor: pointer;
+}
+
 body {
   background-color: rgb(239, 239, 239);
   text-shadow: 1px 1px 1px rgb(150, 150, 150);
@@ -13,19 +18,18 @@ body {
     Verdana, sans-serif;
 }
 
-.main-header{
-  margin-top: 10px ;
+.main-header {
+  margin-top: 10px;
 }
 
 .content {
   padding: 5px 15px;
-  
 }
 
 .menu .wrap {
   list-style: none;
 }
-.menu{
+.menu {
   background: #fff;
   border-radius: 10px;
   width: 100%;
@@ -205,16 +209,6 @@ a {
   font-size: 10px;
 }
 
-/* .elements{
-  border-radius: 2px;
-  border-color: aliceblue;
-  box-shadow: 2px 2px 12px 1px #8b8585;
-  padding: 4px 4px 10px 30px;
-  background-color: #fdfdfd;
-  width: 240px;
-  height: 360px;
-} */
-
 .elements {
   height: 355px;
   width: 209px;
@@ -277,13 +271,45 @@ a {
 }
 
 .table.cart-view {
-  margin-left:  70px;
+  margin-left: 50px;
   margin-top: 20px;
+  box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
+  background: rgb(232, 232, 232);
+}
+
+.discount-table {
+  margin-left: 70px;
+  margin-top: 20px;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
   background: rgb(232, 232, 232);
 }
 
+td.discount {
+  padding: 5px 50px;
+}
+
+td.discount.add {
+  padding-top: 40px;
+  padding-right: auto;
+}
+
+a.discount-link {
+  color: #747474;
+}
+
+a.discount-link:hover {
+  color: #111;
+}
+a.discount-link:active {
+  color: #aaa;
+}
+.discount-description {
+  font-size: 12px;
+  line-height: 1;
+  padding-left: 15px;
+}
 
 .table tbody tr {
   counter-increment: row_counter; /* сосчитать только tr в tbody */
@@ -351,7 +377,9 @@ a {
 }
 .inline {
   display: flex;
-  gap: 45px;
+  flex-wrap: wrap;
+  gap: 35px;
+  row-gap: 10px;
   box-shadow: 1px 2px 4px 0.2px rgba(140, 140, 140, 0.2);
 }
 .inline .btn {
@@ -437,7 +465,6 @@ a {
   opacity: 0.6;
 }
 
-
 .compare {
   position: absolute;
   left: 15px;
@@ -490,7 +517,7 @@ a {
   border-top-width: 2px;
   cursor: pointer;
 }
-.up-arrow a{
+.up-arrow a {
   display: block;
   position: relative;
   width: 20px;
@@ -516,7 +543,7 @@ a {
 .down-arrow:active {
   border-top: solid 8px rgb(200, 200, 200);
 }
-.down-arrow a{
+.down-arrow a {
   display: block;
   position: relative;
   width: 20px;
@@ -539,4 +566,37 @@ a {
 
 .delete-order-row {
   text-align: center;
+}
+
+.txt10px {
+  font-size: 10px;
+  line-height: 0;
+}
+th.line-height-1 {
+  line-height: 1;
+}
+td.digit {
+  text-align: right;
+}
+td.digit.leaf {
+  position: relative;
+}
+
+.has-discount {
+  position: absolute;
+  left: 10px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.footnote {
+  margin-left: 90px;
+  margin-top: 30px;
+}
+thead,
+tfoot {
+  background: rgb(229, 221, 229);
+}
+.current_price{
+  color: #767272;
 }

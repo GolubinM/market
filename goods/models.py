@@ -17,7 +17,7 @@ class Goods(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=11, choices=STATUS_CHOICES, default='published')
     category = models.ForeignKey('GoodsCategories', on_delete=models.PROTECT)
-    current_price = models.DecimalField(max_digits=8, decimal_places=2)
+    current_price = models.FloatField()
     favorites_statuses = models.ManyToManyField(User, through="FavoritesStatuses", blank=True)
     compare_statuses = models.ManyToManyField(User, through="CompareStatuses", blank=True,
                                               related_name='compare_goods_set')
@@ -29,7 +29,7 @@ class Goods(models.Model):
 
 
 class Price(models.Model):
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.FloatField()
     date_time_actual = models.DateTimeField(auto_now=True)
     good_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
 
@@ -40,13 +40,13 @@ class Price(models.Model):
 class Order(models.Model):
     client_id = models.ForeignKey(User, on_delete=models.PROTECT)
     good_id = models.ForeignKey('Goods', on_delete=models.PROTECT, default=1)
-    price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    price = models.FloatField(null=True, blank=True)
     count = models.PositiveSmallIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     paid = models.DateTimeField(default=None, null=True, blank=True)
 
     def line_total(self):
-        return self.count * self.price
+        return round(self.count * self.price, 2)
 
     def __str__(self):
         return f"корзина {self.pk} клиент:{self.client_id}"
@@ -79,11 +79,12 @@ class Discount(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField()
     is_active = models.BooleanField(blank=True, null=True, default=False)
-    size_in_percent = models.DecimalField(decimal_places=2, max_digits=3)
+    size_in_percent = models.FloatField()
     for_each_numbers = models.IntegerField(null=True, blank=True)
     min_order_sum = models.IntegerField(null=True, blank=True)
     for_category = models.ForeignKey(GoodsCategories, on_delete=models.CASCADE, blank=True, null=True)
     for_goods = models.ForeignKey(Goods, on_delete=models.CASCADE, blank=True, null=True)
+    is_for_every = models.BooleanField(blank=False, null=False, default=False)
 
     def __str__(self):
         return self.title

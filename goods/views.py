@@ -1,14 +1,12 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect, get_object_or_404
+from .models import Price, Goods, Order, FavoritesStatuses, CompareStatuses, Discount
+from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio, DiscountForm
+from django.db.models import Sum
 
-import goods.models
-from .models import Price, Goods, Order, FavoritesStatuses, CompareStatuses
-from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio
-from django.db.models import Sum, F, Count, Min
-
+# для хранения промежуточных значений формы фильтра User при перезагрузке страницы
 USER_FILTER_VALUES = [None, None,
-                      'sort_by_category']  # для хранения промежуточных значений формы фильтра User при перезагрузке страницы
+                      'sort_by_category']
 
 
 def goods_page(request):
@@ -17,7 +15,6 @@ def goods_page(request):
     goods = Goods.objects.all()
     if "favorites_only" in request.POST:
         goods = user.goods_set.all()
-
     favorites = user.goods_set.all()
     to_compare = user.compare_goods_set.all()
     cart_quantity = "пусто"
@@ -25,18 +22,15 @@ def goods_page(request):
         quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
         if quantity:
             cart_quantity = f'{quantity} шт'
-
     if not user.is_authenticated or not USER_FILTER_VALUES[1] == request.user or "clear_filter" in request.POST:
         USER_FILTER_VALUES[0] = None
         USER_FILTER_VALUES[2] = "sort_by_category"
-
     if "first-high-price" in request.POST:
         print("set high price")
         USER_FILTER_VALUES[2] = "high_first"
     if "first-low-price" in request.POST:
         print("set high price")
         USER_FILTER_VALUES[2] = "low_first"
-
     if "set_filter" in request.POST:
         form_category = GoodsCategoriesRadio(request.POST)
         if form_category.is_valid():
@@ -61,17 +55,13 @@ def goods_page(request):
             form_category = GoodsCategoriesRadio(USER_FILTER_VALUES[0])
         else:
             form_category = GoodsCategoriesRadio()
-
     if USER_FILTER_VALUES[2] == "low_first":
         sort_rule = ["current_price", "category", "title"]
     elif USER_FILTER_VALUES[2] == 'high_first':
         sort_rule = ["-current_price", "category", "title"]
     else:
         sort_rule = ["category", "current_price", "title"]
-
     cart = Goods.objects.filter(ordered=user)
-    print(cart)
-
     context = {"goods": goods.order_by(*sort_rule),
                'cart_quantity': cart_quantity,
                'form_category': form_category,
@@ -91,24 +81,16 @@ def favorites_status_change(request, pk):
     referer_page = request.META['HTTP_REFERER']
     user = request.user
     good = Goods.objects.get(pk=pk)
-    # print(good)
-    # statuses = user.goods_set.all()
-    # status = len(user.goods_set.filter(pk=pk))
     status = user.goods_set.filter(pk=pk)
     if status:
-        print("В избранном присутствует, удаляем из избранного:")
+        # print("В избранном присутствует, удаляем из избранного:")
         favs_good = FavoritesStatuses.objects.get(user=user, goods=good)
         print(favs_good)
         favs_good.delete()
     else:
         favs_good = FavoritesStatuses(user=user, goods=good)
-        print(favs_good)
         favs_good.save()
-        print("В избранном отсутствует, добавляем в избранное:")
-    status = user.goods_set.filter(pk=pk)
-    print(status)
-    print("favorites status changed!!!")
-    # add_count(request, pk, call_from_template=False)
+        # print("В избранном отсутствует, добавляем в избранное:")
     if 'compare-goods' in referer_page:
         # print('переход с compare-goods')
         return redirect('compare-goods')
@@ -118,24 +100,13 @@ def favorites_status_change(request, pk):
 def compare_status_change(request, pk):
     user = request.user
     good = Goods.objects.get(pk=pk)
-    # print(good)
-    # statuses = user.goods_set.all()
-    # status = len(user.goods_set.filter(pk=pk))
     status = user.compare_goods_set.filter(pk=pk)
     if status:
-        print("В сравнении присутствует, удаляем из избранного:")
         favs_good = CompareStatuses.objects.get(user=user, goods=good)
-        print(favs_good)
         favs_good.delete()
     else:
         favs_good = CompareStatuses(user=user, goods=good)
-        print(favs_good)
         favs_good.save()
-        print("В сравнении отсутствует, добавляем в избранное:")
-    status = user.compare_goods_set.filter(pk=pk)
-    print(status)
-    print("compare status changed!!!")
-    # add_count(request, pk, call_from_template=False)
     return redirect('goods')
 
 
@@ -151,13 +122,9 @@ def compare_goods(request, sort_by=None):
         elif sort_by == "-title":
             sort_rule = ["-title", "category", "current_price"]
         elif sort_by == 'category':
-            print("категории по возр")
-            # sort_rule = ["category", "title", "current_price"]
-            sort_rule = ["category"]
+            sort_rule = ["category", "title", "current_price"]
         elif sort_by == '-category':
-            print("категории по убыв")
-            sort_rule = ["-category"]
-            # sort_rule = ["-category", "title", "current_price"]
+            sort_rule = ["-category", "title", "current_price"]
         elif sort_by == 'price':
             sort_rule = ["current_price", "category", "title"]
         elif sort_by == '-price':
@@ -171,7 +138,6 @@ def compare_goods(request, sort_by=None):
                    'goods_id_list_in_cart': goods_id_list_in_cart,
                    }
         return render(request, 'goods/compare-goods.html', context)
-
     return redirect('goods')
 
 
@@ -198,8 +164,6 @@ def deletegood(request, pk):
 def viewgood(request, pk):
     good = get_object_or_404(Goods, pk=pk)
     form = CreateGoodsForm(instance=good)
-    # user_pk = request.user.pk
-
     if request.method == 'GET':
         return render(request, 'goods/viewgood.html', {'good': good, 'form': form})
     else:
@@ -209,7 +173,6 @@ def viewgood(request, pk):
             last_price = Price.objects.filter(good_id=pk).order_by('-date_time_actual').first()
             print(last_price)
             # Если цена в карточке не изменилась, не добавляем новую запись в справочник цен
-            # print(last_price.price,gd.current_price, last_price.price==gd.current_price)
             if last_price:
                 if last_price.price != gd.current_price:
                     new_price = Price(price=gd.current_price, good_id=gd)
@@ -226,7 +189,7 @@ def viewgood(request, pk):
 
 
 @staff_member_required
-def set_price(request, pk):
+def set_price(request):
     price = get_object_or_404(Price, good_id=request.goods)
     form = SetPrice(instance=price)
     if request.method == 'GET':
@@ -240,16 +203,41 @@ def set_price(request, pk):
             return render(request, 'goods/set-price.html', {'form': form, 'error': 'Неверные данные!'})
 
 
+def check_for_discount(order):
+    sum_for_one_client = 0
+    all_ord = Order.objects.filter(client_id=order.client_id)
+    for sum_ord in all_ord:
+        sum_for_one_client += sum_ord.line_total()
+    # поверяем каждую строку заказа на участие в каждой действующей программе скидок
+    active_discounts = Discount.objects.filter(is_active=True)
+    summ_with_discount = order.line_total()
+    print(order.good_id, order.good_id.category)
+    for discount in active_discounts:
+        if discount.for_category and order.good_id.category == discount.for_category:
+            summ_with_discount = order.line_total() * discount.size_in_percent
+        if discount.for_goods == order.good_id or discount.is_for_every:
+            summ_with_discount = order.line_total() * discount.size_in_percent
+        if discount.for_each_numbers:
+            count_for_apply_discount = order.count // discount.for_each_numbers
+            summ_with_discount = order.line_total() - count_for_apply_discount * order.price * (
+                    1 - discount.size_in_percent)
+        if discount.min_order_sum and (sum_for_one_client >= discount.min_order_sum):
+            summ_with_discount = summ_with_discount * discount.size_in_percent
+    return round(summ_with_discount, 2)
+
+
 def cart_view(request):
     cart = Order.objects.filter(client_id=request.user)
     order_sum = 0
-    for order_position in cart:
-        order_sum += order_position.price * order_position.count
-    # переделать функцию класса Order.line_total() в атрибут, цикл убрать
-    # order_sum = cart.aggregate(Sum("line_total"))
+    order_with_discount_sum = 0
+    for order in cart:
+        order_sum += order.price * order.count
+        order.with_discount_total = check_for_discount(order)
+        order_with_discount_sum += order.with_discount_total
     context = {
         "cart": cart,
-        "order_sum": order_sum
+        "order_sum": order_sum,
+        "order_with_discount_sum": order_with_discount_sum,
     }
     return render(request, 'goods/cart-view.html', context)
 
@@ -270,7 +258,6 @@ def substract_count(request, pk):
     except Exception as e:
         print("Ошибка получения строки заказа", e)
     referer_page = request.META['HTTP_REFERER']
-    print(referer_page)
     if 'compare-goods' in referer_page:
         return redirect('compare-goods')
     elif 'cart-view' in referer_page:
@@ -289,7 +276,6 @@ def add_count(request, pk):
         new_order_row = Order(client_id=client_id, price=gd.current_price, good_id=gd, count=count)
         new_order_row.save()
     referer_page = request.META['HTTP_REFERER']
-    print(referer_page)
     if 'compare-goods' in referer_page:
         return redirect('compare-goods')
     elif 'cart-view' in referer_page:
@@ -315,3 +301,58 @@ def clear_order(request):
     return redirect('goods')
 
 
+@staff_member_required
+def discounts_manage(request):
+    discounts = Discount.objects.all().order_by('-is_active')
+    context = {
+        'title': "Управление скидками:",
+        'discounts': discounts
+    }
+    return render(request, 'goods/discounts-manage.html', context)
+
+
+@staff_member_required
+def delete_discount(request, pk):
+    discount = get_object_or_404(Discount, pk=pk)
+    discount.delete()
+    return redirect('discounts-manage')
+
+
+@staff_member_required
+def edit_discount(request, pk):
+    discount = get_object_or_404(Discount, pk=pk)
+    form = DiscountForm(instance=discount)
+    if request.method == 'GET':
+        return render(request, 'goods/discount.html', {'discount': discount, 'form': form})
+    else:
+        try:
+            form = DiscountForm(request.POST, instance=discount).save()
+            return redirect('discounts-manage')
+        except ValueError as e:
+            print(e)
+            return render(request, 'goods/edit-discount.html',
+                          {'discount': discount, 'form': form, 'error': 'Неверные данные!'})
+
+
+def discounts(request):
+    active_discount = Discount.objects.filter(is_active=True)
+    discount_info = ''
+    for discount in active_discount:
+        discount_info += f"🍁 {discount.description}<br>"
+    context = {
+        'title': "Информация о действующих скидках:",
+        'content': discount_info
+
+    }
+    return render(request, 'seller/home.html', context)
+
+
+def add_discount(request):
+    if request.method == 'POST':
+        form = DiscountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('discounts-manage')
+    else:
+        form = DiscountForm()
+        return render(request, 'goods/discount.html', {'form': form})

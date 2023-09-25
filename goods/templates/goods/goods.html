@@ -1,5 +1,6 @@
 {% extends 'seller/base.html' %}
 {% block content %}
+{% load i18n %}
 
 <h2 class="cat_title">Товары<br></h2>
 <div class="filter-header"><h5 class="first-title">Фильтр товаров по категории</h5><h5>цена от:</h5><h5>цена до:</h5>
@@ -38,7 +39,7 @@
     <div class="elements">
         {% if request.user.is_staff %}
         <h3 class="top"><a href="{% url 'viewgood' good.pk %}">{{ good.title }}</a></h3>
-        <h2 class="current_price">{{ good.current_price }}</h2>
+        <h2 class="current_price">{% language 'ru' %}{{ good.current_price|floatformat:'2' }}{% endlanguage %}</h2>
         <div class="category-text"><p>{{ good.category }}</p></div>
         <a href="{% url 'viewgood' good.pk %}"><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% else %}
@@ -46,7 +47,7 @@
                 title="избранное"
                 href="{% url 'favorites-status-change' good.pk %}">💗</a></h3>
         <h3 class="top"><a href="">{{ good.title }}</a></h3>
-        <h2 class="current_price">{{ good.current_price }}</h2>
+        <h2 class="current_price">{% language 'ru' %}{{ good.current_price|floatformat:'2' }}{% endlanguage %}</h2>
         <div class="category-text"><p>{{ good.category }}</p></div>
         <a href=""><img class="model_img" src="{{ good.picture.url }}" alt="img"></a>
         {% if request.user.is_authenticated %}

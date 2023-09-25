@@ -1,9 +1,7 @@
 import math
-
 from django import forms
 from django.db.models import Min, Max
-
-from .models import Goods, Price, GoodsCategories
+from .models import Goods, Price, GoodsCategories, Discount
 
 
 class CreateGoodsForm(forms.ModelForm):
@@ -18,6 +16,12 @@ class CreateGoodsForm(forms.ModelForm):
             'slug': forms.TextInput(attrs={'class': 'form-input'}),
             'description': forms.Textarea(attrs={'cols': 60, 'rows': 5, 'class': 'form-input'}),
         }
+
+
+class DiscountForm(forms.ModelForm):
+    class Meta:
+        model = Discount
+        fields = "__all__"
 
 
 class SetPrice(forms.ModelForm):

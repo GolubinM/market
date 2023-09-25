@@ -1,11 +1,12 @@
 {% extends 'seller/base.html' %}
 {% load static %}
 {% load humanize %}
+{% load i18n %}
 {% block content %}
 
 <h4 class="info_string">
-<p>🛒 Корзина</p>
-<a class="cart_link" href="{% url 'clear_order' %}"> [XX] Удалить все товары из корзины</a>
+    <p>🛒 Корзина</p>
+    <a class="cart_link" href="{% url 'clear_order' %}"> [XX] Удалить все товары из корзины</a>
 </h4>
 <table class="table cart-view">
     <thead>
@@ -15,6 +16,7 @@
         <th colspan="3" class="row_count">кол-во</th>
         <th>цена</th>
         <th>сумма</th>
+        <th class="line-height-1">сумма <br><span class="txt10px">с учетом скидки</span></th>
         <th>удалить<br>из корзины</th>
     <tbody>
     {% for row in cart %}
@@ -23,16 +25,23 @@
         <td class="subsract_good"><a href="{% url 'substract_count' row.good_id.pk %}">-</a></td>
         <td class="row_count">{{ row.count }}</td>
         <td class="add_good"><a href="{% url 'add_count' row.good_id.pk %}">+</a></td>
-        <td>{{ row.price|intcomma }}</td>
-        <td>{{ row.line_total|intcomma }}</td>
+        <td class="digit">{% language 'ru' %}{{ row.price|floatformat:'2' }}</td>
+        <td class="digit">{{ row.line_total|floatformat:'2' }}</td>
+        <td class="digit leaf">
+            <span class="has-discount" title="товар со скидкой">{% if row.line_total > row.with_discount_total %}🍁{% endif %}</span>
+            {{ row.with_discount_total|floatformat:'2' }}{% endlanguage %}
+        </td>
         <td class="delete-order-row"><a href="{% url 'delete_order_row' row.good_id.pk %}">[X]</a></td>
     </tr>
     {% endfor %}
     <tfoot>
     <tr>
         <td colspan="6" style="text-align:right">ИТОГО:</td>
-        <td>{{ order_sum|intcomma }}</td>
+        <td class="digit">{{ order_sum|intcomma }}</td>
+        <td class="digit">{% language 'ru' %} {{ order_with_discount_sum|floatformat:'2' }} {% endlanguage %}</td>
+        <td></td>
     </tr>
 
 </table>
+<p class="footnote txt10px">🍁 - товары со скидкой</p>
 {% endblock %}

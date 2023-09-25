@@ -28,18 +28,6 @@ def contacts(request):
     return render(request, 'seller/home.html', context)
 
 
-def discounts(request):
-    active_discount = [1, 2, 3]
-    discount_info = ''
-    for discount_inf in active_discount:
-        discount_info += f"{discount_inf}<br>"
-    context = {
-        'title': "Информация о скидках:",
-        'content': discount_info
-
-    }
-    return render(request, 'seller/home.html', context)
-
 
 def logout_user(request):
     logout(request)
@@ -58,3 +46,5 @@ class LoginUser(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('goods')  # возвращаемся на форму в случае успеха
+
+

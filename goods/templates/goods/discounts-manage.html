@@ -1,0 +1,40 @@
+{% extends 'seller/base.html' %}
+{% load static %}
+{% block content %}
+<h1 class="main-header">{{ title }}</h1>
+<div class="content start">
+    <table class="discount-table">
+        {% for discount_prog in discounts %}
+        <tr class="discount-row">
+            <td class="discount">
+                {{ discount_prog }}
+                <p class="discount-description">{{ discount_prog.description }}</p>
+            </td>
+            <td class="discount">
+                <p class="discount-description">is_active:{{ discount_prog.is_active }}</p>
+            </td>
+            <td class="discount">
+                <a class="discount-link" href="{% url 'edit-discount' discount_prog.pk %}" type="button">ИЗМЕНИТЬ</a>
+            </td>
+            <td class="discount">
+                <a class="discount-link" href="{% url 'delete-discount' discount_prog.pk %} " type="btn"
+                   onclick="clicked(event)" title="удалить">[X]</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="discount-row">
+            <td class="discount  add">
+                <a class="discount-link" href="{% url 'add-discount' %}" type="btn">+ ДОБАВИТЬ</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+function clicked(e)
+{
+    if(!confirm('Вы уверены, что хотите удалить данную скидку?')) {
+        e.preventDefault();
+    }
+}
+</script>
+{% endblock %}
