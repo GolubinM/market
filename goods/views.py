@@ -1,4 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Price, Goods, Order, FavoritesStatuses, CompareStatuses, Discount
 from .forms import CreateGoodsForm, SetPrice, GoodsCategoriesRadio, DiscountForm
@@ -16,7 +17,7 @@ def goods_page(request):
     cart_quantity = "пусто"
     cart = ""
     favorites = ""
-    to_compare =""
+    to_compare = ""
     if request.user.is_authenticated:
         if "favorites_only" in request.POST:
             goods = user.goods_set.all()
@@ -101,6 +102,7 @@ def favorites_status_change(request, pk):
     return redirect('goods')
 
 
+@login_required(login_url="/login")
 def compare_status_change(request, pk):
     user = request.user
     good = Goods.objects.get(pk=pk)
@@ -114,6 +116,7 @@ def compare_status_change(request, pk):
     return redirect('goods')
 
 
+@login_required(login_url="/login")
 def compare_goods(request, sort_by=None):
     print(sort_by)
     user = request.user
@@ -145,6 +148,7 @@ def compare_goods(request, sort_by=None):
     return redirect('goods')
 
 
+@login_required(login_url="/login")
 def create_good(request):
     if request.method == 'POST':
         form = CreateGoodsForm(request.POST, request.FILES)
@@ -230,6 +234,7 @@ def check_for_discount(order):
     return round(summ_with_discount, 2)
 
 
+@login_required(login_url="/login")
 def cart_view(request):
     cart = Order.objects.filter(client_id=request.user)
     order_sum = 0
@@ -246,12 +251,14 @@ def cart_view(request):
     return render(request, 'goods/cart-view.html', context)
 
 
+@login_required(login_url="/login")
 def get_cart_info(request):
     user = request.user
     cart_user = Order.objects.filter(client_id=user)
     return cart_user
 
 
+@login_required(login_url="/login")
 def substract_count(request, pk):
     client_id = request.user
     try:
@@ -268,6 +275,7 @@ def substract_count(request, pk):
         return redirect('cart_view')
 
 
+@login_required(login_url="/login")
 def add_count(request, pk):
     gd = get_object_or_404(Goods, pk=pk)
     client_id = request.user
@@ -286,6 +294,7 @@ def add_count(request, pk):
         return redirect('cart_view')
 
 
+@login_required(login_url="/login")
 def delete_order_row(request, pk, from_form=True):
     client_id = request.user
     try:
@@ -296,6 +305,7 @@ def delete_order_row(request, pk, from_form=True):
         return redirect('cart_view')
 
 
+@login_required(login_url="/login")
 def clear_order(request):
     client_id = request.user
     try:
