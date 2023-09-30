@@ -11,31 +11,35 @@ USER_FILTER_VALUES = [None, None,
 
 def goods_page(request):
     user = request.user
-    # goods = Goods.objects.all()
+    print(user)
     goods = Goods.objects.all()
-    if "favorites_only" in request.POST:
-        goods = user.goods_set.all()
-    favorites = user.goods_set.all()
-    to_compare = user.compare_goods_set.all()
     cart_quantity = "пусто"
+    cart = ""
+    favorites = ""
+    to_compare =""
     if request.user.is_authenticated:
+        if "favorites_only" in request.POST:
+            goods = user.goods_set.all()
+        favorites = user.goods_set.all()
+        to_compare = user.compare_goods_set.all()
         quantity = get_cart_info(request).aggregate(Sum("count"))["count__sum"]
         if quantity:
             cart_quantity = f'{quantity} шт'
+        cart = Goods.objects.filter(ordered=user)
     if not user.is_authenticated or not USER_FILTER_VALUES[1] == request.user or "clear_filter" in request.POST:
         USER_FILTER_VALUES[0] = None
         USER_FILTER_VALUES[2] = "sort_by_category"
     if "first-high-price" in request.POST:
-        print("set high price")
+        # print("set high price")
         USER_FILTER_VALUES[2] = "high_first"
     if "first-low-price" in request.POST:
-        print("set high price")
+        # print("set high price")
         USER_FILTER_VALUES[2] = "low_first"
     if "set_filter" in request.POST:
         form_category = GoodsCategoriesRadio(request.POST)
         if form_category.is_valid():
             USER_FILTER_VALUES[0] = form_category.cleaned_data
-            USER_FILTER_VALUES[1] = request.user
+            # USER_FILTER_VALUES[1] = request.user
             data = form_category.cleaned_data
             selected_point = data['selected_categories']
             min_price_filter = data['min_price_filter']
@@ -61,7 +65,7 @@ def goods_page(request):
         sort_rule = ["-current_price", "category", "title"]
     else:
         sort_rule = ["category", "current_price", "title"]
-    cart = Goods.objects.filter(ordered=user)
+
     context = {"goods": goods.order_by(*sort_rule),
                'cart_quantity': cart_quantity,
                'form_category': form_category,
