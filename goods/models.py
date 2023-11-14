@@ -9,6 +9,13 @@ class Goods(models.Model):
         ('unpublished', 'Unpublished')
     )
     title = models.CharField(max_length=250)
+    #
+    # t = models.IntegerField(blank=False,null=False)
+    # t2 = models.DecimalField(max_digits=10,decimal_places=2)
+    # t3 = models.NullBooleanField()
+    # t4 = models.DateTimeField()
+    # t5 = models.NullBooleanField()
+    #
     slug = models.SlugField(max_length=250)
     description = models.TextField()
     picture = models.ImageField(upload_to='goods/images')

@@ -25,7 +25,6 @@
     <form action="{% url 'delete' good.id %}" method="post">
         {% csrf_token %}
         <button class="btn">Удалить</button>
-
     </form>
 </div>
 {% endblock %}
